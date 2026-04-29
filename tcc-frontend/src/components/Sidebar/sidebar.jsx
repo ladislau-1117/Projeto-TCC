@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import { NavLink, useNavigate } from "react-router-dom"; // Importante mudar para NavLink
-import { MenuIcon, HomeIcon, SearchIcon, RegistIcon, Statistics, CatalogIcon, LogoutIcon } from "../../assets/icons";
+import { MenuIcon, HomeIcon, SearchIcon, RegistIcon, Statistics, CatalogIcon, LogRegistIcon, LogoutIcon } from "../../assets/icons";
 import toast from "react-hot-toast"
 
 import '../Sidebar/sidebar.css';
@@ -52,6 +52,11 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                 <NavLink to="/pages/historicMov" className="navItem">
                     <CatalogIcon />
                     {isOpen && <span>Registro de Actividade</span>}
+                </NavLink>
+
+                <NavLink to="/pages/registLog" className="navItem">
+                    <LogRegistIcon />
+                    {isOpen && <span>Registro de Login</span>}
                 </NavLink>
 
             </nav>

@@ -54,7 +54,7 @@ function Login(){
                 
                 <form onSubmit={handleLogin}>
                     <input
-                        type="text"
+                        type="number"
                         placeholder="Nº de Processo"
                         className="inputForm"
                         onChange={(e) => setNumProcesso(e.target.value)}

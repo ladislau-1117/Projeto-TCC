@@ -8,6 +8,7 @@ import StatsData from "./pages/statistics/statistics";
 import Layout from './components/Layout/layout';
 import HistoricMov from './pages/historicMov/historicMov'
 import RegisterTcc from './pages/RegisterTcc/registerTcc';
+import LogsPage from './pages/RegistLogs/RegistAllLogs';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="/pages/statistics" element={<StatsData />} />
           <Route path="/pages/historicMov" element={<HistoricMov />} />
           <Route path="/pages/registerTcc" element={<RegisterTcc />} />
+          <Route path="/pages/registLog" element={<LogsPage />} />
           
         </Route>
       </Routes>

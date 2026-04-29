@@ -1,0 +1,62 @@
+.logsContainer {
+    padding: 20px;
+    background-color: #f9f9f9;
+}
+
+.tabelaWrapper {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.tabelaLogs {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.tabelaLogs thead {
+    background-color: var(--fundo-escuro);
+    color: var(--texto-claro);
+}
+
+.tabelaLogs th,
+.tabelaLogs td {
+    padding: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+
+.linhaLog:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.nomeUtilizador {
+    background: #ecf0f1;
+    padding: 4px 10px;
+    border: 1px solid gray;
+    border-radius: 15px;
+    font-size: 0.9rem;
+    color: var(--texto-escuro);
+    font-weight: bold;
+}
+
+.statusBadge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: bold;
+}
+
+.statusBadge.loginSucesso {
+    border-left: 3px solid #27ae60;
+    background-color: #eafaf1;
+    color: #27ae60;
+}
+
+.statusBadge.loginFalha {
+    color: #db6c5f;
+    border-left: 3px solid #e74c3c;
+    background: #fdedec;
+}
