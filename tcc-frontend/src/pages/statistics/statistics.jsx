@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { BarGrafic, CircleGrafic } from '../../components/DashboardComponents/grafics';
+import { BarGrafic, CircleGrafic } from '../../components/DashboardComponents/graphics';
 import './statistics.css';
 
 const StatsData = () => {

@@ -1,125 +1,62 @@
-
 import "./dashboardInfo.css";
 import { BookIcon, InsertIcon, GraficIcon } from "../../assets/icons";
-import { BarGrafic, CircleGrafic } from "./grafics"; 
+import { BarGrafic, CircleGrafic } from "./graphics"; 
 import TableHistoricMov from "../Historic/tableHistóricMov";
-function DashInfo ({dados, graphData}){
 
-    return (
-        <>
-        <div className="infoMain">
-                <div className="divDashInfo">
-                    <h3>Total de Relatórios</h3>
-                    <div>
-                        <h3>{dados.totalRelatorios}</h3>
-                        <BookIcon />
-                    </div>
-                </div>
+// Sub-componente para os Cards Individuais
+const InfoCard = ({ title, value, icon, unit = "" }) => (
+  <div className="divDashInfo">
+    <h3>{title}</h3>
+    <div>
+      <h3>{value} {unit}</h3>
+      {icon}
+    </div>
+  </div>
+);
 
-                <div className="divDashInfo">
-                    <h3>Cadastrados Este Ano</h3>
-                    <div>
-                        <h3>{dados.totalAno}</h3>
-                        <InsertIcon />
-                    </div>
-                </div>
+function DashInfo({ dados, graphData }) {
+  return (
+    <>
+      <div className="infoMain">
+        <InfoCard 
+          title="Total de Relatórios" 
+          value={dados.totalRelatorios} 
+          icon={<BookIcon />} 
+        />
+        <InfoCard 
+          title="Cadastrados Este Ano" 
+          value={dados.totalAno} 
+          icon={<InsertIcon />} 
+        />
+        <InfoCard 
+          title="Ocupação por Estante" 
+          value={dados.ocupacao} 
+          unit="%" 
+          icon={<GraficIcon />} 
+        />
+      </div>
 
-                <div className="divDashInfo">
-                    <h3>Ocupação por estante</h3>
-                    <div>
-                        <h3>{dados.ocupacao} %</h3>
-                        <GraficIcon />
-                    </div>
-                </div>
+      <DashGraficos graficData={graphData} />
 
-            </div>
-            <DashGraficos graficData={graphData}/>
-            <h3>Histórico de movimentações</h3>
-            <TableHistoricMov/>
-        </>
-    )
+      <div className="sectionHistoric">
+        <h3>Histórico de movimentações</h3>
+        <TableHistoricMov />
+      </div>
+    </>
+  );
 }
 
-
-function DashGraficos({graficData}){
-
-    return (
-        <div className="graficosMain">
-          <div className="graficos">
-            <BarGrafic data={graficData}/>
-          </div>
-
-          <div>
-            <CircleGrafic data={graficData}/>
-          </div>
-        </div>
-    )
+function DashGraficos({ graficData }) {
+  return (
+    <div className="graficosMain">
+      <div className="graficoBox">
+        <BarGrafic data={graficData.barData} />
+      </div>
+      <div className="graficoBox">
+        <CircleGrafic data={graficData.circleData} />
+      </div>
+    </div>
+  );
 }
-
-function TableActivity(){
-
-    return (
-        <div className="tableContainer">
-  <h3 className="titleTable">Atividade Recente</h3>
-  <table className="tabla">
-    <thead>
-      <tr>
-        <th>Data</th>
-        <th>Usuário</th>
-        <th>Ação Realizada</th>
-        <th>ID do TCC</th>
-      </tr>
-    </thead>
-    <tbody>
-      {/* Dados fictícios para o teu esqueleto */}
-      <tr>
-        <td>25/05/2024</td>
-        <td>Ladislau Admin</td>
-        <td>Cadastrou Novo TCC</td>
-        <td>#00125</td>
-      </tr>
-      <tr>
-        <td>25/05/2024</td>
-        <td>Ana Costa</td>
-        <td>Alterou Localização</td>
-        <td>#00098</td>
-      </tr>
-      <tr>
-        <td>24/05/2024</td>
-        <td>Ladislau Admin</td>
-        <td>Aprovou Relatório</td>
-        <td>#00112</td>
-      </tr>
-      <tr>
-        <td>24/05/2024</td>
-        <td>Ladislau Admin</td>
-        <td>Aprovou Relatório</td>
-        <td>#00112</td>
-      </tr>
-      <tr>
-        <td>24/05/2024</td>
-        <td>Ladislau Admin</td>
-        <td>Aprovou Relatório</td>
-        <td>#00112</td>
-      </tr>
-      <tr>
-        <td>24/05/2024</td>
-        <td>Ladislau Admin</td>
-        <td>Aprovou Relatório</td>
-        <td>#00112</td>
-      </tr>
-      <tr>
-        <td>24/05/2024</td>
-        <td>Ladislau Admin</td>
-        <td>Aprovou Relatório</td>
-        <td>#00112</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
-    )
-}
-
 
 export default DashInfo;

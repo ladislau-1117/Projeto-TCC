@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import axios from "axios";
 
 const TableHistoricMov = () => {
     const [logs, setLogs] = useState([]);
@@ -11,12 +12,11 @@ const TableHistoricMov = () => {
 
     useEffect(() => {
         setLoading(true);
-        // Passamos a página atual na URL
-        fetch(`http://localhost/TCC_PROJETO/tcc_back/historicMov/historic.php?page=${pagina}`)
-            .then((res) => res.json())
-            .then((data) => {
-                // Agora os logs estão dentro de data.logs
-                if (data.logs && Array.isArray(data.logs)) {
+        // Mudamos para a porta 8000 do Laravel
+        axios.get(`http://127.0.0.1:8000/api/dashboard/history?page=${pagina}`)
+            .then((response) => {
+                const data = response.data;
+                if (data.logs) {
                     setLogs(data.logs);
                     setTotalPaginas(data.totalPaginas);
                     setTotalRegistos(data.totalRegistos);

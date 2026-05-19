@@ -1,7 +1,7 @@
 import "./registerTcc.css";
 import { FileIcon, LocationIcon } from "../../assets/icons";
-//import { Plus, Trash2 } from "lucide-react"; // Importe ícones para o + e lixo
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios"
 import toast from "react-hot-toast";
 import { CancelAuthor } from "../../assets/icons";
 
@@ -16,6 +16,8 @@ function RegisterTcc() {
     const [autores, setAutores] = useState(['']);
     const [showModal, setShowModal] = useState(false);
     const dataHoraAtual = new Date().toLocaleString('pt-PT');
+    const [opcoesBack, setOpcoesBack] = useState({ areas: [], cursos: [] });
+    const [cursosFiltrados, setCursosFiltrados] = useState([]);
 
     //função para permitir apenas letras
     const validateLetters = (value) => {
@@ -56,53 +58,86 @@ function RegisterTcc() {
     };
 
     const handleFinalRegister = async () => {
-        // guardar utilisador logado e validação
         const userStorage = sessionStorage.getItem('user');
-
         if (!userStorage) {
-            toast.error("Sessão expirada. Por favor, faça login novamente.");
+            toast.error("Sessão expirada.");
             return;
         }
 
         const userObj = JSON.parse(userStorage);
-        const userId = userObj.id;
 
-        // enviar dados de registo
+        
         const enviarDados = {
-            ...formData,
-            autores: autores,
-            dataRegistro: dataHoraAtual,
-            userId: userId
+            titulo: formData.titulo,
+            tipo_projeto: "TCC", 
+            orientadorNome: formData.orientadorNome,
+            anoDefesa: formData.anoDefesa,
+            notaFinal: formData.nota, 
+            idCurso: formData.curso,  
+            statusAprovacao: parseInt(formData.nota) >= 10 ? 'Aprovado' : 'Reprovado',
+            autores: autores, 
+            userId: userObj.id,
+            
+            andar: formData.andar,
+            sala: formData.sala,
+            armario: formData.armario,
+            prateleira: formData.prateleira
         };
 
         try {
-            const resposta = await fetch("http://localhost/TCC_PROJETO/tcc_back/RegistTcc/RegistTcc.php", {
+            const resposta = await fetch("http://127.0.0.1:8000/api/tccs", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(enviarDados),
+                body: JSON.stringify(enviarDados) // Enviamos o objeto mapeado
             });
 
             const resultado = await resposta.json();
 
-            if (resultado.sucesso) {
-                toast.success(resultado.mensagem);
+            if (resposta.ok) {
+                toast.success(resultado.message || "Cadastrado com sucesso!");
                 setShowModal(false);
-
             } else {
-                toast.error(resultado.mensagem);
+                // Se o Laravel devolver erro 500 ou 422, ele cai aqui
+                toast.error(resultado.erro || "Erro ao cadastrar");
             }
         } catch (erro) {
             toast.error("Erro na conexão com o servidor");
         }
     };
 
+    //VALIDANDO IMPUTS DO FORMULÁRIO...
+    useEffect(() => {
+        const carregarDados = async () => {
+            try {
+                // URL atualizada para o padrão do Laravel
+                const resposta = await fetch("http://127.0.0.1:8000/api/tccs/form-data");
+                const dados = await resposta.json();
+
+                // O Laravel devolve os nomes das colunas exatamente como estão no Model
+                setOpcoesBack(dados);
+            } catch (erro) {
+                console.error("Erro ao carregar opções:", erro);
+            }
+        };
+        carregarDados();
+    }, []);
+
+    useEffect(() => {
+        if (formData.areaFormacao && opcoesBack.cursos) {
+            const filtrados = opcoesBack.cursos.filter(
+                (c) => String(c.area_id) === String(formData.areaFormacao)
+            );
+            setCursosFiltrados(filtrados);
+        } else {
+            setCursosFiltrados([]);
+        }
+    }, [formData.areaFormacao, opcoesBack.cursos]);
+
     const gerarNotas = () => {
         const notaMaxima = 20;
         const notaMinima = 0;
         const notas = [];
 
-        // Usamos i++ para as notas aparecerem de 0 a 20 (ordem crescente)
-        // Se preferir as maiores notas primeiro, use (let i = notaMaxima; i >= notaMinima; i--)
         for (let i = notaMinima; i <= notaMaxima; i++) {
             notas.push(i);
         }
@@ -171,17 +206,35 @@ function RegisterTcc() {
                             </div>
                             {/* Selects*/}
                             <div className="inputContainer">
-                                <select name="areaFormacao" required onChange={handleChange}>
+                                <select
+                                    name="areaFormacao"
+                                    required
+                                    value={formData.areaFormacao}
+                                    onChange={handleChange}
+                                >
                                     <option value="" hidden></option>
-                                    <option value="Informática">Informática</option>
+                                    {opcoesBack.areas?.map(area => (
+                                        <option key={area.idArea} value={area.idArea}>
+                                            {area.nomeArea}
+                                        </option>
+                                    ))}
                                 </select>
                                 <label>Área de formação</label>
                             </div>
                             <div className="inputContainer">
-                                <select name="curso" required onChange={handleChange}>
-                                    <option value="" hidden></option>
-                                    <option value="Técnico de Informática">Técnico de Informática</option>
-                                    <option value="Gestão de Sistemas">Gestão de Sistemas</option>
+                                <select
+                                    name="curso"
+                                    required
+                                    value={formData.curso}
+                                    onChange={handleChange}
+                                    disabled={!formData.areaFormacao}
+                                >
+                                    <option value=""></option>
+                                    {cursosFiltrados.map(curso => (
+                                        <option key={curso.idCurso} value={curso.idCurso}> {/* CORRETO: Enviamos o ID */}
+                                            {curso.nome}
+                                        </option>
+                                    ))}
                                 </select>
                                 <label>Curso</label>
                             </div>
@@ -198,7 +251,7 @@ function RegisterTcc() {
                             </div>
                             <div className="inputContainer">
                                 <select name="nota" required onChange={handleChange} >
-                                    <option value="" hidden></option>
+                                    <option value={formData.nota} hidden></option>
                                     {gerarNotas().map((notas) => (
                                         <option key={notas} value={notas}>
                                             {notas}

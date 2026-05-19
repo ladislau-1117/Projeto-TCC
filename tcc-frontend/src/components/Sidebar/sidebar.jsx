@@ -12,9 +12,9 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     const navigate = useNavigate();
 
     const handleLogout = () => {
-        sessionStorage.clear(); 
+        sessionStorage.removeItem('user'); 
         
-        navigate("/"); 
+        window.location.href = "/"; 
         
        
         toast.success("Sessão terminada!");

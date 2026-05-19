@@ -1,5 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `acervo_tcc` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */;
-USE `acervo_tcc`;
 -- MySQL dump 10.13  Distrib 8.0.44, for Win64 (x86_64)
 --
 -- Host: 127.0.0.1    Database: acervo_tcc
@@ -28,7 +26,22 @@ CREATE TABLE `alunos` (
   `idAluno` int(11) NOT NULL AUTO_INCREMENT,
   `nome` varchar(100) NOT NULL,
   PRIMARY KEY (`idAluno`)
-) ENGINE=InnoDB AUTO_INCREMENT=74 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=77 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `areas_formacao`
+--
+
+DROP TABLE IF EXISTS `areas_formacao`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `areas_formacao` (
+  `idArea` int(11) NOT NULL AUTO_INCREMENT,
+  `nomeArea` varchar(100) NOT NULL,
+  PRIMARY KEY (`idArea`),
+  UNIQUE KEY `nomeArea` (`nomeArea`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -41,9 +54,11 @@ DROP TABLE IF EXISTS `cursos`;
 CREATE TABLE `cursos` (
   `idCurso` int(11) NOT NULL AUTO_INCREMENT,
   `nome` varchar(100) NOT NULL,
-  `areaFormacao` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`idCurso`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `area_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`idCurso`),
+  KEY `fk_curso_area` (`area_id`),
+  CONSTRAINT `fk_curso_area` FOREIGN KEY (`area_id`) REFERENCES `areas_formacao` (`idArea`)
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -65,7 +80,7 @@ CREATE TABLE `historicomovimentacao` (
   KEY `fk_HistTser` (`idUtilizador`),
   CONSTRAINT `fk_HistTcc` FOREIGN KEY (`idTcc`) REFERENCES `tccs` (`idTcc`) ON DELETE SET NULL,
   CONSTRAINT `fk_HistTser` FOREIGN KEY (`idUtilizador`) REFERENCES `utilizadores` (`idUtilizador`)
-) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -82,7 +97,7 @@ CREATE TABLE `locaisarmazenamento` (
   `prateleira` varchar(20) NOT NULL,
   `compartimento` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`idLocal`)
-) ENGINE=InnoDB AUTO_INCREMENT=153 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=158 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -101,7 +116,7 @@ CREATE TABLE `logsacesso` (
   PRIMARY KEY (`idLog`),
   KEY `idUtilizador` (`idUtilizador`),
   CONSTRAINT `logsacesso_ibfk_1` FOREIGN KEY (`idUtilizador`) REFERENCES `utilizadores` (`idUtilizador`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -144,7 +159,7 @@ CREATE TABLE `tccs` (
   KEY `fk_TccLocal` (`idLocal`),
   CONSTRAINT `fk_TccCurso` FOREIGN KEY (`idCurso`) REFERENCES `cursos` (`idCurso`) ON DELETE CASCADE,
   CONSTRAINT `fk_TccLocal` FOREIGN KEY (`idLocal`) REFERENCES `locaisarmazenamento` (`idLocal`)
-) ENGINE=InnoDB AUTO_INCREMENT=117 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=122 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -165,7 +180,7 @@ CREATE TABLE `utilizadores` (
   PRIMARY KEY (`idUtilizador`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `numProcesso` (`numProcesso`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=76 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -177,4 +192,4 @@ CREATE TABLE `utilizadores` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-04-29 20:33:25
+-- Dump completed on 2026-05-05 22:44:25

@@ -49,36 +49,27 @@ function Login() {
   };
 
   const handleLogin = async (e) => {
-    e.preventDefault();
+      e.preventDefault();
+      const loadingToast = toast.loading("Verificando credenciais...");
 
+      try {
+          const response = await axios.post('http://127.0.0.1:8000/api/login', {
+              numProcesso: numProcesso, 
+              password: senha           
+          });
 
-    const loadingToast = toast.loading("Entrando...");
+          toast.dismiss(loadingToast);
+          toast.success("Bem-vindo!");
 
-    try {
-      const response = await axios.post(
-        'http://localhost/TCC_PROJETO/tcc_back/logPHP/login.php',
-        { numProcesso, senha }
-      );
+          sessionStorage.setItem('user', JSON.stringify(response.data.user));
 
-      toast.dismiss(loadingToast);
+          navigate('/pages/home'); 
 
-      if (response.data.success) {
-        toast.success("Login efectuado com sucesso");
-        sessionStorage.setItem('user', JSON.stringify(response.data));
-
-        setTimeout(() => {
-          navigate('/pages/home');
-        }, 1500);
-
-      } else {
-        toast.error(response.data.error || "Erro desconhecido");
+      } catch (error) {
+          toast.dismiss(loadingToast);
+          const mensagem = error.response?.data?.message || "Erro ao fazer login";
+          toast.error(mensagem);
       }
-
-    } catch (error) {
-      toast.dismiss(loadingToast);
-      console.error(error);
-      toast.error("Erro ao conectar ao servidor.");
-    }
   };
 
   return (

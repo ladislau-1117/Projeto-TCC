@@ -1,58 +1,52 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import DashInfo from "../../components/DashboardComponents/dashboardInfo";
-import { toast } from 'react-hot-toast'
-
+import { toast } from 'react-hot-toast';
+import { useNavigate } from "react-router-dom";
 
 function Home() {
-  const [user, setUser] = useState(null);
-  const [dados, setDados] = useState({
-    totalRelatorios: 0,
-    totalAno: 0,
-    ocupacao: 0
-  });
+  const navigate = useNavigate();
+  const [dados, setDados] = useState({ totalRelatorios: 0, totalAno: 0, ocupacao: 0 });
   const [graphData, setGraphData] = useState({ barData: [], circleData: [] });
 
   useEffect(() => {
     const userStorage = sessionStorage.getItem('user');
 
-    if (userStorage) {
-      setUser(JSON.parse(userStorage));
-      fetchDados();
-    } else {
-      toast.error("Faça o Login Para acessar a esta página");
-      window.location.href = '/';
+    if (!userStorage) {
+      toast.error("Por favor, faça login para acessar");
+      navigate("/"); 
+      return;
     }
+
+    
+    fetchDashboardData();
   }, []);
 
-  // Função para buscar os dados reais do banco ...
-  const fetchDados = async () => {
+  const fetchDashboardData = async () => {
     try {
-      const resCards = await axios.get('http://localhost/TCC_PROJETO/tcc_back/dashboard/cardsInfo.php');
+
+      const [resCards, resGraphs] = await Promise.all([
+        axios.get('http://127.0.0.1:8000/api/dashboard/stats'),
+        axios.get('http://127.0.0.1:8000/api/dashboard/graphs')
+      ]);
+
       setDados(resCards.data);
-
-
-      //Função para pegar os dados de gráficos do banco ...
-      const resGraphs = await axios.get('http://localhost/TCC_PROJETO/tcc_back/dashboard/grafics.php');
       setGraphData(resGraphs.data);
-    }
-    catch (error) {
-      toast.error("Erro ao buscar estatísticas dos cards", error);
+    } catch (error) {
+      toast.error("Erro ao atualizar dados do Dashboard");
+      console.error(error);
     }
   };
 
-
-
-
-
   return (
-    <>
+    <div className="homeContainer">
       <div className="logsHeader">
         <h1>Visão Geral</h1>
         <p><strong>Dashboard do sistema e dados estatísticos.</strong></p>
       </div>
+      
       <DashInfo dados={dados} graphData={graphData} />
-    </>
+    </div>
   );
 }
 

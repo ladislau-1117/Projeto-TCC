@@ -25,11 +25,11 @@ function SearchPage() {
 
     // Estados de filtros...
     const [filtros, setFiltros] = useState({
-    ano: "",
-    curso: "",
-    notaMin: 0,
-    notaMax: 20
-});
+        ano: "",
+        curso: "",
+        notaMin: 0,
+        notaMax: 20
+    });
 
 
     // 3. Lógica Unificada de Busca e Paginação
@@ -37,28 +37,25 @@ function SearchPage() {
         const carregarDados = async () => {
             setLoading(true);
             try {
-                // Usamos o timestamp para evitar cache do navegador e garantir dados frescos
-                const timestamp = new Date().getTime();
-                const url = `http://localhost/TCC_PROJETO/tcc_back/selects/searchTcc.php?` + 
-                `page=${pagina}&query=${termoBusca}&` +
-                `ano=${filtros.ano}&curso=${filtros.curso}&` +
-                `notaMin=${filtros.notaMin}&notaMax=${filtros.notaMax}`;
-                
-                const res = await fetch(url);
-                const data = await res.json();
+                // Usamos o axios para fazer o pedido GET limpo
+                const resposta = await axios.get("http://127.0.0.1:8000/api/tccs", {
+                    params: {
+                        page: pagina,
+                        query: termoBusca
+                    }
+                });
 
-                console.log("Dados recebidos do PHP:", data);
-
-                if (data.tccs) {
-                    setTccs(data.tccs); 
-                    setTotalPaginas(data.totalPaginas);
+                if (resposta.data && resposta.data.tccs) {
+                    setTccs(resposta.data.tccs);
+                    setTotalPaginas(resposta.data.totalPaginas);
                 } else {
                     setTccs([]);
                     setTotalPaginas(0);
                 }
             } catch (error) {
-                console.error("Erro ao carregar dados:", error);
-                toast.error("Erro ao conectar com o servidor.");
+                console.error("Erro detalhado:", error);
+
+                toast.error("Erro ao conectar com o servidor Laravel.");
             } finally {
                 setLoading(false);
             }
@@ -74,10 +71,24 @@ function SearchPage() {
 
     // --- FUNÇÕES DE INTERAÇÃO ---
 
-    const prepararEdicao = (tcc) => {
-        setTccSelecionado(tcc);
-        setShowEditModal(true);
-        setShowDetailsModal(false);
+    const prepararEdicao = async (tcc) => {
+        try {
+            // Busca os dados ultra completos e reais do relatório
+            const resposta = await axios.get(`http://127.0.0.1:8000/api/tccs/${tcc.idTcc}`);
+
+            if (resposta.data) {
+                // Unifica os dados do TCC e os autores para o ModalEditTcc ler perfeitamente
+                const tccCompleto = {
+                    ...resposta.data.tcc,
+                    listaAutores: resposta.data.autores // Passa a lista real de autores
+                };
+                setTccSelecionado(tccCompleto);
+                setShowEditModal(true);
+                setShowDetailsModal(false);
+            }
+        } catch (error) {
+            toast.error("Erro ao carregar os dados reais para edição.");
+        }
     };
 
     const visualizarDetalhes = (tcc) => {
@@ -94,25 +105,29 @@ function SearchPage() {
         setShowEditModal(false);
         // Resetamos para a página 1 para ver as alterações
         setPagina(1);
-        setTermoBusca(termoBusca); // Dispara o useEffect novamente
+        setTermoBusca(termoBusca);
     };
 
     const handleConfirmDelete = async () => {
         try {
-            const userStorage = sessionStorage.getItem('user'); // Verifica sessão
+            const userStorage = sessionStorage.getItem('user');
             const userObj = JSON.parse(userStorage);
             const userId = userObj.idUtilizador || userObj.id;
 
-            await axios.delete(`http://localhost/TCC_PROJETO/tcc_back/DeleteTcc/delTcc.php?id=${tccSelecionado.idTcc}&userId=${userId}`);
+            // Chamada direta para a nova API do Laravel
+            await axios.delete(`http://127.0.0.1:8000/api/tccs/${tccSelecionado.idTcc}`, {
+                params: { userId: userId }
+            });
 
-            // Remove localmente para feedback instantâneo
+            // Remove localmente para dar feedback visual instantâneo
             setTccs(prev => prev.filter(item => item.idTcc !== tccSelecionado.idTcc));
-            
+
             setShowDeleteModal(false);
             setShowDetailsModal(false);
             toast.success("Relatório removido com sucesso!");
         } catch (error) {
-            toast.error("Erro ao apagar o relatório");
+            console.error(error);
+            toast.error("Erro ao apagar o relatório no servidor Laravel.");
         }
     };
 
@@ -129,7 +144,7 @@ function SearchPage() {
                     setTermoBusca(val);
                     setPagina(1); // Sempre que pesquisar, volta para a página 1
                 }}
-                onSearch={() => {}} 
+                onSearch={() => { }}
             />
 
             <ShowResult
@@ -144,24 +159,24 @@ function SearchPage() {
             {/* Paginação Estilo Catálogo */}
             {totalPaginas > 1 && (
                 <div className="pagination-wrapper">
-                    <button 
+                    <button
                         className="pag-btn"
-                        disabled={pagina === 1} 
-                        onClick={() => { setPagina(p => p - 1); window.scrollTo(0,0); }}
-                    > 
-                        &laquo; Anterior 
+                        disabled={pagina === 1}
+                        onClick={() => { setPagina(p => p - 1); window.scrollTo(0, 0); }}
+                    >
+                        &laquo; Anterior
                     </button>
-                    
-                    <span className="page-indicator"> 
-                        Página <strong>{pagina}</strong> de {totalPaginas} 
+
+                    <span className="page-indicator">
+                        Página <strong>{pagina}</strong> de {totalPaginas}
                     </span>
-                    
-                    <button 
+
+                    <button
                         className="pag-btn"
-                        disabled={pagina >= totalPaginas} 
-                        onClick={() => { setPagina(p => p + 1); window.scrollTo(0,0); }}
-                    > 
-                        Próximo &raquo; 
+                        disabled={pagina >= totalPaginas}
+                        onClick={() => { setPagina(p => p + 1); window.scrollTo(0, 0); }}
+                    >
+                        Próximo &raquo;
                     </button>
                 </div>
             )}
@@ -177,7 +192,7 @@ function SearchPage() {
 
             <ModalEditTcc
                 show={showEditModal}
-                tcc={tccSelecionado} 
+                tcc={tccSelecionado}
                 onClose={() => setShowEditModal(false)}
                 onSave={handleUpdateSuccess}
             />

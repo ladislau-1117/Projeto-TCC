@@ -8,12 +8,12 @@ const Register = () => {
     const [numProcesso, setNumProcesso] = useState('');
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
-    const [confirmarSenha, setConfirmarSenha] = useState(''); 
+    const [confirmarSenha, setConfirmarSenha] = useState('');
     const [erroSenha, setErroSenha] = useState('');
 
     const navigate = useNavigate();
 
-    
+
     const handleNomeChange = (e) => {
         const valor = e.target.value;
         // Regex para inserir apenas letras
@@ -58,23 +58,26 @@ const Register = () => {
 
     const handleRegister = async (e) => {
         e.preventDefault();
-        
+
         const loadingToast = toast.loading("Registando...");
 
-        
+
         if (senha !== confirmarSenha) {
             toast.error("As senhas não coincidem!");
             return;
         }
 
         try {
-            const response = await axios.post('http://localhost/TCC_PROJETO/tcc_back/logPHP/register.php', {
-                nome, numProcesso, email, senha
+            const response = await axios.post('http://127.0.0.1:8000/api/register', {
+                name: nome,
+                numProcesso: numProcesso,
+                email: email,
+                password: senha
             });
 
             toast.dismiss(loadingToast);
 
-            
+
             if (response.data.message) {
                 toast.success("Usuário cadastrado com sucesso");
                 navigate("/");
@@ -83,6 +86,7 @@ const Register = () => {
             }
         } catch (error) {
             toast.dismiss(loadingToast);
+            console.log("Erro do Laravel:", error.response.data);
             toast.error("Erro de conexão com o servidor.");
         }
     }
@@ -125,7 +129,7 @@ const Register = () => {
                     <button
                         type="submit"
                         className="buttonForm"
-                        
+
                     >
                         Registar
                     </button>
