@@ -77,10 +77,9 @@ function SearchPage() {
             const resposta = await axios.get(`http://127.0.0.1:8000/api/tccs/${tcc.idTcc}`);
 
             if (resposta.data) {
-                // Unifica os dados do TCC e os autores para o ModalEditTcc ler perfeitamente
                 const tccCompleto = {
-                    ...resposta.data.tcc,
-                    listaAutores: resposta.data.autores // Passa a lista real de autores
+                    ...resposta.data,
+                    listaAutores: resposta.data.autores 
                 };
                 setTccSelecionado(tccCompleto);
                 setShowEditModal(true);

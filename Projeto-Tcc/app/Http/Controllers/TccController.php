@@ -178,74 +178,84 @@ class TccController extends Controller
 
 
 
-// 1. Busca os dados para preencher o formulário de edição
-public function show($id)
-{
-    try {
-        $tcc = DB::table('tccs as t')
-            ->leftJoin('cursos as c', 't.idCurso', '=', 'c.idCurso')
-            ->leftJoin('area_formacao as af', 'c.idArea', '=', 'af.idArea') 
-            ->leftJoin('locaisarmazenamento as l', 't.idLocal', '=', 'l.idLocal')
-            ->select(
-                't.idTcc', 't.idLocal', 't.titulo', 't.orientadorNome', 't.anoDefesa',
-                't.statusAprovacao', 't.notaFinal', 't.idCurso',
-                'c.nome as curso_nome', 'af.nomeArea as area_nome',
-                'l.blocoArquivo', 'l.estante', 'l.prateleira', 'l.compartimento'
-            )
-            ->where('t.idTcc', $id)
-            ->first();
+// Buscar um TCC específico para edição
+    public function show($id)
+    {
+        try {
+            // Puxa o TCC com as relações mapeadas exatamente como fizemos no index
+            $tcc = Tcc::with(['curso.areaFormacao', 'autores', 'local'])->find($id);
 
-        if (!$tcc) {
-            return response()->json(['erro' => 'Relatório não encontrado'], 404);
-        }
-
-        // Busca os autores vinculados
-        $autores = DB::table('tcc_autores as ta')
-            ->join('alunos as al', 'ta.idAluno', '=', 'al.idAluno')
-            ->where('ta.idTcc', $id)
-            ->select('al.idAluno', 'al.nome')
-            ->get();
-
-        return response()->json([
-            'tcc' => $tcc,
-            'autores' => $autores
-        ]);
-
-    } catch (\Exception $e) {
-        return response()->json(['erro' => 'Erro ao carregar dados: ' . $e->getMessage()], 500);
-    }
-}
-
-// Salva as alterações feitas no Modal de Edição
-public function update(Request $request, $id)
-{
-    try {
-        return DB::transaction(function () use ($request, $id) {
-            
-            // Atualiza os dados na tabela TCCs
-            DB::table('tccs')->where('idTcc', $id)->update([
-                'titulo' => $request->input('titulo'),
-                'orientadorNome' => $request->input('orientadorNome'),
-                'anoDefesa' => $request->input('anoDefesa'),
-                'notaFinal' => $request->input('notaFinal'),
-                'idCurso' => $request->input('idCurso'),
-            ]);
-
-            
-            $idLocal = $request->input('idLocal');
-            if ($idLocal) {
-                DB::table('locaisarmazenamento')->where('idLocal', $idLocal)->update([
-                    'blocoArquivo' => $request->input('blocoArquivo'),
-                    'estante' => $request->input('estante'),
-                    'prateleira' => $request->input('prateleira'),
-                    'compartimento' => $request->input('compartimento'),
-                ]);
+            if (!$tcc) {
+                return response()->json(["erro" => "Relatório não encontrado."], 404);
             }
 
-            return response()->json(['message' => 'Relatório atualizado com sucesso!']);
-        });
-    } catch (\Exception $e) {
-        return response()->json(['erro' => 'Erro ao atualizar: ' . $e->getMessage()], 500);
+            // Formata o JSON de retorno para o React receber os campos mastigados
+            return response()->json([
+            'idTcc' => $tcc->idTcc,
+            'idLocal' => $tcc->idLocal,
+            'titulo' => $tcc->titulo,
+            'orientadorNome' => $tcc->orientadorNome,
+            'anoDefesa' => $tcc->anoDefesa,
+            'notaFinal' => $tcc->notaFinal,
+            'idCurso' => $tcc->idCurso,
+            'idArea' => $tcc->curso->area_id ?? null,
+            
+            'autores' => $tcc->autores->pluck('nome')->toArray(),
+            
+            'blocoArquivo' => $tcc->local->blocoArquivo ?? '',
+            'estante' => $tcc->local->estante ?? '',
+            'compartimento' => $tcc->local->compartimento ?? '',
+            'prateleira' => $tcc->local->prateleira ?? ''
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                "erro" => "Erro ao carregar dados reais para edição: " . $e->getMessage()
+            ], 500);
+        }
     }
-}
+
+    // Salva as alterações feitas no Modal de Edição
+    public function update(Request $request, $id)
+    {
+        try {
+            return DB::transaction(function () use ($request, $id) {
+
+                // 1. Atualizar a tabela TCCs
+                $affectedRows = DB::table('tccs')->where('idTcc', $id)->update([
+                    'titulo'         => $request->input('titulo'),
+                    'orientadorNome' => $request->input('orientadorNome'),
+                    'anoDefesa'      => $request->input('anoDefesa'),
+                    'notaFinal'      => $request->input('notaFinal'),
+                    'idCurso'        => $request->input('idCurso'),
+                ]);
+
+                // 2. Atualizar a tabela Locais de Armazenamento
+                $idLocal = $request->input('idLocal');
+                if ($idLocal) {
+                    DB::table('locaisarmazenamento')->where('idLocal', $idLocal)->update([
+                        'blocoArquivo'  => $request->input('blocoArquivo'),
+                        'estante'       => $request->input('estante'),
+                        'compartimento' => $request->input('compartimento'),
+                        'prateleira'    => $request->input('prateleira'),
+                    ]);
+                }
+
+                // Validar se algo foi realmente atualizado
+                if ($affectedRows === 0) {
+                    return response()->json([
+                        'erro' => 'Nenhum registo foi atualizado.'
+                    ], 400);
+                }
+
+                return response()->json([
+                    'message' => 'Relatório atualizado com sucesso!'
+                ], 200);
+            });
+        } catch (\Exception $e) {
+            return response()->json([
+                'erro' => 'Erro interno ao atualizar: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }

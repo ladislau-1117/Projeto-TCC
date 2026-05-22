@@ -8,20 +8,20 @@ class Tcc extends Model
 {
     protected $table = 'tccs';
     protected $primaryKey = 'idTcc';
-    public $timestamps = false; // Ajusta para true se usares timestamps nesta tabela
+    public $timestamps = false;
 
     protected $fillable = [
         'titulo', 'tipo_projeto', 'orientadorNome', 'anoDefesa', 
         'statusAprovacao', 'notaFinal', 'idCurso', 'idLocal', 'dataHora'
     ];
 
-    // 1. Relação com os Autores (Muitos para Muitos)
+    // 1. Relação com os Autores 
     public function autores()
     {
         return $this->belongsToMany(Aluno::class, 'tcc_autores', 'idTcc', 'idAluno');
     }
 
-    // 2. Relação com o Curso (Um TCC pertence a um Curso)
+    // 2. Relação com o Curso 
     public function curso()
     {
         return $this->belongsTo(Curso::class, 'idCurso', 'idCurso');

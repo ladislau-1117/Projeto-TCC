@@ -16,19 +16,23 @@ function ModalEditTcc({ show, tcc, onClose, onSave }) {
             setFormData({
                 titulo: tcc.titulo || '',
                 orientadorNome: tcc.orientadorNome || '',
-                areaFormacao: tcc.areaFormacao || 'Informática',
-                curso: tcc.curso || '',
-                anoDefesa: tcc.anoDefesa || '',
-                nota: tcc.notaFinal || '',
-                // Sincronizado com os nomes vindos do novo SELECT do PHP
-                andar: tcc.blocoArquivo || '',
-                sala: tcc.estante || '',
-                armario: tcc.compartimento || '',
-                prateleira: tcc.prateleira || ''
+                areaFormacao: tcc.areaFormacao, 
+                // Se idCurso for 1 é Técnico de Informática, se for 2 é Gestão de Sistemas
+                curso: parseInt(tcc.idCurso) || 1,
+                anoDefesa: tcc.anoDefesa,
+                nota: tcc.notaFinal,
+                
+                // Mapeamento exato com o teu JSON real do Banco de Dados
+                andar: tcc.blocoArquivo || 'Rés-do-chão',
+                sala: tcc.estante || '78',
+                armario: tcc.compartimento || '1',
+                prateleira: tcc.prateleira || '1'
             });
-            // Ajuste para lidar com autores vindos como String ou Array
+
             if (tcc.autores) {
-                setAutores(typeof tcc.autores === 'string' ? tcc.autores.split(' | ') : tcc.autores);
+                setAutores(Array.isArray(tcc.autores) ? tcc.autores : [tcc.autores]);
+            } else {
+                setAutores(['']);
             }
         }
     }, [show, tcc]);
@@ -50,7 +54,6 @@ function ModalEditTcc({ show, tcc, onClose, onSave }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // 1. Verificação de segurança da sessão
         const userSession = sessionStorage.getItem('user');
         if (!userSession) {
             toast.error("Sessão expirada. Faça login novamente.");
@@ -58,34 +61,41 @@ function ModalEditTcc({ show, tcc, onClose, onSave }) {
         }
 
         const userObj = JSON.parse(userSession);
-
-        // 2. CORREÇÃO CRÍTICA: Captura o ID correto conforme o seu banco
         const userId = userObj.idUtilizador || userObj.id;
 
-        if (!userId) {
-            toast.error("Erro: Identificador do utilizador não encontrado.");
-            return;
-        }
-
+        // Monta o Payload com os nomes exatos que o teu Laravel update precisa ler
         const payload = {
-            ...formData,
-            idTcc: tcc.idTcc,
-            idLocal: tcc.idLocal,
-            userId: userId, // Agora garantido que não é null
-            autores
+            titulo: formData.titulo,
+            orientadorNome: formData.orientadorNome,
+            anoDefesa: parseInt(formData.anoDefesa),
+            notaFinal: parseInt(formData.nota), // Casado com 'notaFinal' do Laravel
+            idCurso: parseInt(formData.curso), 
+            idLocal: tcc.idLocal, // Enviando o ID do local correto
+            
+            // Tradução das variáveis do HTML para as colunas do Banco (blocoArquivo, estante, etc.)
+            blocoArquivo: formData.andar,
+            estante: formData.sala,
+            compartimento: formData.armario,
+            prateleira: formData.prateleira,
+            
+            userId: userId,
+            autores: autores
         };
 
         try {
-            const res = await axios.post("http://localhost/TCC_PROJETO/tcc_back/UpdateTcc/updateTcc.php", payload);
-            if (res.data.status === "success") {
-                toast.success(res.data.message);
-                onSave(); // Dispara a atualização da lista na SearchPage
+            // Rota PUT da tua API unificada do Laravel
+            const res = await axios.put(`http://127.0.0.1:8000/api/tccs/${tcc.idTcc}`, payload);
+
+            if (res.status === 200 && res.data.message) {
+                toast.success(res.data.message || "Relatório atualizado com sucesso!");
+                onSave();
             } else {
-                toast.error(res.data.message);
+                toast.error("Erro ao atualizar. Resposta inválida do servidor.");
             }
         } catch (error) {
             console.error("Erro na atualização:", error);
-            toast.error("Erro na ligação ao servidor");
+            const mensagemErro = error.response?.data?.erro || "Erro na ligação ao servidor Laravel";
+            toast.error(mensagemErro);
         }
     };
 
@@ -144,8 +154,8 @@ function ModalEditTcc({ show, tcc, onClose, onSave }) {
 
                                 <div className="inputContainer">
                                     <select name="curso" required value={formData.curso} onChange={handleChange}>
-                                        <option value="Técnico de Informática">Técnico de Informática</option>
-                                        <option value="Gestão de Sistemas">Gestão de Sistemas</option>
+                                        <option value={1}>Técnico de Informática</option>
+                                        <option value={2}>Gestão de Sistemas Informático</option>
                                     </select>
                                     <label>Curso</label>
                                 </div>
