@@ -38,7 +38,7 @@ class TccController extends Controller
         DB::beginTransaction();
 
         try {
-            // 1. Criar o registo na tabela locaisarmazenamento com os dados vindos do React
+            // Criar o registo na tabela locaisarmazenamento
             $local = LocalArmazenamento::create([
                 'blocoArquivo'  => $request->andar,
                 'estante'       => $request->sala,
@@ -46,7 +46,6 @@ class TccController extends Controller
                 'prateleira'    => $request->prateleira,
             ]);
 
-            // 2. Criar o TCC vinculando o idLocal gerado automaticamente acima
             $tcc = Tcc::create([
                 'titulo'          => $request->titulo,
                 'tipo_projeto'    => $request->tipo_projeto,
@@ -55,27 +54,36 @@ class TccController extends Controller
                 'statusAprovacao' => $request->statusAprovacao,
                 'notaFinal'       => $request->notaFinal,
                 'idCurso'         => $request->idCurso,
-                'idLocal'         => $local->idLocal, // <--- ID DINÂMICO AQUI!
-                'dataHora'        => now(), // ou o formato que usares
+                'idLocal'         => $local->idLocal, 
+                'dataHora'        => now(), 
             ]);
 
-            // 3. Lógica para associar os autores (tcc_autores)
+            // associar os autores (tcc_autores)
             if ($request->has('autores')) {
                 foreach ($request->autores as $nomeAutor) {
                     if (!empty($nomeAutor)) {
-                        // Aqui assume-se que geras ou buscas o aluno pelo nome. 
-                        // Se criares um aluno novo para o TCC:
+                        
                         $aluno = Aluno::create(['nome' => $nomeAutor]);
                         $tcc->autores()->attach($aluno->idAluno);
                     }
                 }
             }
 
+            // Registar no histórico de movimentação
+            $userId = $request->input('userId') ?? auth()->id() ?? 1;
+            DB::table('historicomovimentacao')->insert([
+                'idUtilizador' => $userId,
+                'dataAcao' => now(),
+                'tipoAcao' => 'Criação de Relatório',
+                'tituloTcc' => $tcc->titulo,
+                'idTcc' => $tcc->idTcc
+            ]);
+
             DB::commit();
 
             return response()->json([
                 "status" => "success",
-                "message" => "Relatório e localização cadastrados com sucesso!"
+                "message" => "Relatório cadastrado com sucesso!"
             ], 201);
 
         } catch (\Exception $e) {
@@ -157,7 +165,7 @@ class TccController extends Controller
                 DB::table('historicomovimentacao')->insert([
                     'idUtilizador' => $userId, 
                     'dataAcao' => now(),
-                    'tipoAcao' => 'Exclusão',
+                    'tipoAcao' => 'Eliminação',
                     'tituloTcc' => $tcc->titulo,
                     'idTcc' => $tcc->idTcc 
                 ]);
@@ -182,14 +190,14 @@ class TccController extends Controller
     public function show($id)
     {
         try {
-            // Puxa o TCC com as relações mapeadas exatamente como fizemos no index
+            
             $tcc = Tcc::with(['curso.areaFormacao', 'autores', 'local'])->find($id);
 
             if (!$tcc) {
                 return response()->json(["erro" => "Relatório não encontrado."], 404);
             }
 
-            // Formata o JSON de retorno para o React receber os campos mastigados
+            // Formata o JSON de retorno para o React receber os campos
             return response()->json([
             'idTcc' => $tcc->idTcc,
             'idLocal' => $tcc->idLocal,
@@ -210,7 +218,7 @@ class TccController extends Controller
 
         } catch (\Exception $e) {
             return response()->json([
-                "erro" => "Erro ao carregar dados reais para edição: " . $e->getMessage()
+                "erro" => "Erro ao carregar dados para edição: " . $e->getMessage()
             ], 500);
         }
     }
@@ -241,12 +249,34 @@ class TccController extends Controller
                     ]);
                 }
 
-                // Validar se algo foi realmente atualizado
-                if ($affectedRows === 0) {
-                    return response()->json([
-                        'erro' => 'Nenhum registo foi atualizado.'
-                    ], 400);
+                // 3. Atualizar os autores
+                $autores = $request->input('autores', []);
+                if (!empty($autores)) {
+                    // Remove os autores antigos
+                    DB::table('tcc_autores')->where('idTcc', $id)->delete();
+
+                    // Adiciona os novos autores
+                    foreach ($autores as $nomeAutor) {
+                        if (!empty(trim($nomeAutor))) {
+                            $aluno = Aluno::firstOrCreate(['nome' => $nomeAutor]);
+                            DB::table('tcc_autores')->insert([
+                                'idTcc' => $id,
+                                'idAluno' => $aluno->idAluno
+                            ]);
+                        }
+                    }
                 }
+
+                // 4. Registar no histórico de movimentação
+                $userId = $request->input('userId') ?? auth()->id() ?? 1;
+                $tcc = Tcc::find($id);
+                DB::table('historicomovimentacao')->insert([
+                    'idUtilizador' => $userId,
+                    'dataAcao' => now(),
+                    'tipoAcao' => 'Edição de Relatórios',
+                    'tituloTcc' => $tcc->titulo,
+                    'idTcc' => $id
+                ]);
 
                 return response()->json([
                     'message' => 'Relatório atualizado com sucesso!'

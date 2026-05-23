@@ -74,22 +74,22 @@ class DashboardController extends Controller
 
     public function getHistory(Request $request){
         $logs = DB::table('historicomovimentacao as h')
-            // MUDANÇA AQUI: de 'utilizadores' para 'users'
-            // E de 'u.idUtilizador' para 'u.id'
-            ->leftJoin('users as u', 'h.idUtilizador', '=', 'u.id') 
+            ->leftJoin('users as u', 'h.idUtilizador', '=', 'u.id')
             ->select(
-                'h.idMov', 
-                'h.dataAcao', 
-                'h.tipoAcao', 
-                'h.tituloTcc', 
-                'u.name as utilizadorNome' // No Laravel/Breeze o campo costuma ser 'name'
+                'h.idMov',
+                'h.dataAcao',
+                'h.tipoAcao',
+                'h.tituloTcc',
+                'u.name as utilizadorNome'
             )
             ->orderBy('h.dataAcao', 'desc')
-            ->paginate(10); 
+            ->paginate(10);
 
         return response()->json([
             "logs" => $logs->items(),
-            "totalRegistos" => $logs->total()
+            "totalRegistos" => $logs->total(),
+            "totalPaginas" => $logs->lastPage(),
+            "paginaAtual" => $logs->currentPage()
         ]);
     }
 }

@@ -44,7 +44,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                     {isOpen && <span>Registar</span>}
                 </NavLink>
 
-                <NavLink to="/pages/statistics" className="navItem">
+                <NavLink to="/pages/analiseAcademica" className="navItem">
                     <Statistics /> 
                     {isOpen && <span>Análise Acadêmica</span>}
                 </NavLink>

@@ -100,11 +100,27 @@ function SearchPage() {
         setShowDeleteModal(true);
     };
 
-    const handleUpdateSuccess = () => {
+    const handleUpdateSuccess = async () => {
         setShowEditModal(false);
-        // Resetamos para a página 1 para ver as alterações
-        setPagina(1);
-        setTermoBusca(termoBusca);
+
+        // Faz um fetch imediato para atualizar a lista
+        try {
+            const resposta = await axios.get("http://127.0.0.1:8000/api/tccs", {
+                params: {
+                    page: pagina,
+                    query: termoBusca
+                }
+            });
+
+            if (resposta.data && resposta.data.tccs) {
+                setTccs(resposta.data.tccs);
+                setTotalPaginas(resposta.data.totalPaginas);
+            }
+
+        } catch (error) {
+            console.error("Erro ao atualizar lista:", error);
+            toast.error("Erro ao atualizar a lista.");
+        }
     };
 
     const handleConfirmDelete = async () => {
@@ -126,7 +142,7 @@ function SearchPage() {
             toast.success("Relatório removido com sucesso!");
         } catch (error) {
             console.error(error);
-            toast.error("Erro ao apagar o relatório no servidor Laravel.");
+            toast.error("Erro ao apagar o relatório.");
         }
     };
 

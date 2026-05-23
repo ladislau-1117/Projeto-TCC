@@ -50,24 +50,41 @@ function Login() {
 
   const handleLogin = async (e) => {
       e.preventDefault();
+
+      // Se houver erro de validação visual na senha, trava o submit para poupar a API
+      if (erroSenha) {
+        toast.error("Por favor, corrija os erros na senha antes de prosseguir.");
+        return;
+      }
+
       const loadingToast = toast.loading("Verificando credenciais...");
 
       try {
           const response = await axios.post('http://127.0.0.1:8000/api/login', {
-              numProcesso: numProcesso, 
+              num_processo: numProcesso, 
               password: senha           
+          }, {
+              headers: {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json'
+              }
           });
-
+         
           toast.dismiss(loadingToast);
           toast.success("Bem-vindo!");
 
           sessionStorage.setItem('user', JSON.stringify(response.data.user));
+          
+          // Se estás a usar Sanctum/Tokens, podes guardar o token aqui também se precisares:
+          // sessionStorage.setItem('token', response.data.token);
 
           navigate('/pages/home'); 
 
       } catch (error) {
           toast.dismiss(loadingToast);
-          const mensagem = error.response?.data?.message || "Erro ao fazer login";
+          
+          // Pega a mensagem da chave 'error' que configurámos nas respostas do Laravel
+          const mensagem = error.response?.data?.error || "Erro ao fazer login";
           toast.error(mensagem);
       }
   };
