@@ -5,125 +5,140 @@
 }
 
 .dashboardHeader h1 {
-    color: var(--fundo-escuro);
-    font-size: 2rem;
+    color: var(--fundo-escuro, #1e293b);
+    font-size: 1.8rem;
+    margin-bottom: 2px;
 }
 
 .dashboardHeader span {
     color: #6c757d;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
 }
 
-/* Grid para organizar os 4 cards de forma responsiva */
+/* Grid para organizar os 4 cards superiores */
 .totalizadoresGrid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 20px;
-    margin-top: 30px;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 16px;
+    margin-top: 20px;
+    margin-bottom: 25px;
 }
 
-/* Estilo Individual de cada Card */
 .cardKpi {
     background: white;
-    border-radius: 12px;
-    border: 1px solid var(--cor-primaria);
-    padding: 15px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
-    border-left: 10px solid var(--cor-primaria);
+    border-radius: 8px;
+    border: 1px solid rgba(230, 126, 34, 0.2);
+    padding: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.01);
+    border-left: 6px solid var(--cor-primaria, #e67e22);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    height: 90px;
 }
 
 .cardKpi h4 {
-    color: var(--texto-escuro);
-    font-size: 0.9rem;
-    font-weight: 600;
-    margin: 0 0 5px 0;
+    color: #64748b;
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin: 0;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
 .cardKpi .kpiValue {
-    font-size: 2.2rem;
+    font-size: 1.8rem;
     font-weight: 700;
-    color: var(--texto-escuro);
+    color: #1e293b;
+    line-height: 1.1;
 }
 
 .cardKpi .kpiValueText {
-    font-size: 1.25rem;
+    font-size: 1.1rem;
     font-weight: 700;
-    color: var(--texto-escuro);
-    margin-bottom: 10px;
-    line-height: 1.3;
+    color: #1e293b;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .cardKpi .kpiSub {
-    color: #555555;
-    font-size: 0.8rem;
+    color: #94a3b8;
+    font-size: 0.75rem;
     margin: 0;
 }
 
-.loadingDashboard {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 80vh;
-    font-size: 1.2rem;
-    color: #6c757d;
-}
-
-/* Nova seção de gráficos dispostos em 2 colunas */
-.chartsSectionGrid {
+/* Estrutura das duas colunas fixas lado a lado */
+.seccaoAnaliseDupla {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
-    gap: 25px;
-    margin-top: 30px;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
 }
 
+/* Card unificado com altura controlada */
 .chartCard {
     background: white;
-    border-radius: 12px;
-    padding: 24px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
-    border: 1px solid var(--cor-primaria);
+    border-radius: 10px;
+    padding: 18px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.01);
+    border: 1px solid rgba(16, 24, 40, 0.06);
+    box-sizing: border-box;
+    height: 310px; /* Limita geograficamente o tamanho do bloco */
+    display: flex;
+    flex-direction: column;
 }
 
 .chartCard h3 {
-    color: #2c3e50;
-    font-size: 1.05rem;
-    font-weight: 600;
-    margin: 0 0 20px 0;
+    color: #1e293b;
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin: 0 0 14px 0;
 }
 
 .chartResponsiveWrapper {
     width: 100%;
-    height: 300px;
+    flex: 1;
+    min-height: 0;
 }
 
-
-
-
-
-
-
-
-.badgeWarning {
-    background-color: #fef9e7;
-    color: #f1c40f;
-}
-.badgeExcelent {
-    background-color: #d5f4e6;
-    color: #27ae60;
+/* Alinhamento Horizontal Interno para Pizza + Tabela */
+.wrapperSplitDonut {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    flex: 1;
+    min-height: 0;
+    gap: 15px;
 }
 
+.containerGraficoDonut {
+    width: 160px;
+    height: 160px;
+    flex-shrink: 0;
+}
 
+.flexTable {
+    flex: 1;
+    margin-top: 0 !important;
+}
 
+/* Badge de legenda ao lado do texto da tabela */
+.formatoIndicador {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+/* Ajustes finos da Tabela */
 .tableResponsiveWrapper {
     width: 100%;
-    margin-top: 15px;
-    overflow-hidden: hidden;
-    border-radius: 8px; /* Cantos arredondados na tabela inteira */
+    overflow: hidden;
+    border-radius: 6px;
     border: 1px solid #e2e8f0;
 }
 
@@ -131,62 +146,86 @@
     width: 100%;
     border-collapse: collapse;
     text-align: left;
-    font-size: 0.92rem;
-    background-color: #ffffff;
+    font-size: 0.85rem;
 }
 
-/* Head da tabela com o fundo escuro do teu projeto */
 .dashboardTable thead tr {
-    background-color: var(--fundo-escuro, #1e293b); /* Usa a tua variável ou fallback elegante */
+    background-color: #1e293b;
 }
 
 .dashboardTable th {
     color: #ffffff;
-    padding: 14px 16px;
+    padding: 10px 12px;
     font-weight: 600;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     text-transform: uppercase;
-    letter-spacing: 0.8px;
-    border: none;
+    letter-spacing: 0.5px;
 }
 
-/* Estilização das linhas de dados */
 .dashboardTable tbody tr {
-    transition: background-color 0.2s ease;
     border-bottom: 1px solid #f1f5f9;
 }
 
-/* Efeito Zebrado Suave (linhas alternadas) */
 .dashboardTable tbody tr:nth-of-type(even) {
     background-color: #f8fafc;
 }
 
-/* Hover destacado */
-.dashboardTable tbody tr:hover {
-    background-color: #f1f5f9;
-}
-
 .dashboardTable td {
-    padding: 16px 16px;
+    padding: 10px 12px;
     color: #334155;
-    font-weight: 500;
 }
-
 
 .tableBoldCell {
     font-weight: 700 !important;
-    color: var(--cor-primaria) !important;
-    font-size: 0.95rem;
+    color: #e67e22 !important;
 }
 
+.statusBadge {
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.badgeWarning {
+    background-color: #fffbeb;
+    color: #b45309;
+}
+
+.badgeExcelent {
+    background-color: #f0fdf4;
+    color: #15803d;
+}
 
 .txtAlunos {
-    color: #64748b;
-    font-size: 0.88rem;
-    background: #edf2f7;
-    padding: 4px 8px;
-    border-radius: 6px;
+    color: #475569;
+    font-size: 0.8rem;
+    background: #f1f5f9;
+    padding: 2px 6px;
+    border-radius: 4px;
     font-weight: 600;
-
 }
 
+.loadingDashboard {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+    font-size: 1.1rem;
+    color: #64748b;
+}
+
+/* Responsivo para ecrãs pequenos */
+@media (max-width: 960px) {
+    .seccaoAnaliseDupla {
+        grid-template-columns: 1fr;
+    }
+    .chartCard {
+        height: auto;
+        min-height: 280px;
+    }
+    .wrapperSplitDonut {
+        flex-direction: column;
+        height: auto;
+    }
+}
