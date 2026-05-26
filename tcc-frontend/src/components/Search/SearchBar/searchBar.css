@@ -1,7 +1,6 @@
 
 /*
-Older style css is in 'goSearch.css
-Here only modified the imputSearch's broder-radio 
+apenas estilo da barra de pesquisa e dos filtros
 */
 
 .imputSearchP{
@@ -34,150 +33,203 @@ Here only modified the imputSearch's broder-radio
 
 
 
-
+/* Container da Barra Horizontal */
 .barra-filtros-horizontal {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-end;
-    gap: 20px;
-    background-color: #ffffff; /* Cor de fundo limpa */
-    padding: 16px 24px;
-    border-radius: 10px;
-    margin: 0 auto 25px auto;
-    border: 1px solid #e3e6f0; /* Casamento perfeito com as bordas dos teus modais/cards */
-    max-width: 100%; /* Garante que respeita as margens do teu container global */
-    box-sizing: border-box;
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) 1.5fr; /* 3 colunas iguais + 1 maior para o Slider */
+    align-items: end !important; /* Alinha perfeitamente a base dos selects com a base do slider */
+    gap: 20px !important;
+    background-color: #fbfbfd !important;
+    padding: 24px !important;
+    border-radius: 12px !important;
+    margin: 0 auto 30px auto !important;
+    border: 1px solid rgba(217, 111, 50, 0.12) !important;
+    box-shadow: 0 6px 18px rgba(16, 24, 40, 0.04) !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
 }
 
-/* Itens individuais da barra (Ano, Curso, Formação, Notas) */
-.filtro-item {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    flex: 1; /* Faz com que todos os selects tenham a mesma largura proporcional */
+/* Estrutura interna de cada item (Label em cima, Campo em baixo) */
+.barra-filtros-horizontal .filtro-item {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+    width: 100% !important;
+    position: relative !important;
 }
 
-.filtro-item label {
-    font-size: 13px;
-    font-weight: 600;
-    color: #4e73df; /* Tom de azul padrão para dar destaque */
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+/* Estilização limpa das Labels Superiores */
+.barra-filtros-horizontal .filtro-item label, 
+.barra-filtros-horizontal .range-titulo-fixo {
+    position: static !important;
+    display: inline-block !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    color: var(--cor-primaria) !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.8px !important;
+    margin: 0 0 2px 0 !important;
+    text-align: left !important;
+    transform: none !important;
 }
 
-.filtro-item select {
-    width: 100%;
-    padding: 10px 12px;
-    border: 1px solid #d1d3e2;
-    border-radius: 6px;
-    background-color: #f8f9fc;
-    color: #6e707e;
-    font-size: 14px;
-    outline: none;
-    transition: border-color 0.2s ease-in-out;
+/* Os Dropdowns (Selects) com Altura e Bordas Suaves */
+.barra-filtros-horizontal .filtro-item select {
+    width: 100% !important;
+    height: 42px !important; /* Altura idêntica à caixa do Range Slider */
+    padding: 0 16px !important;
+    border: 1px solid rgba(16, 24, 40, 0.12) !important;
+    border-radius: 8px !important;
+    background-color: #ffffff !important;
+    color: #343a40 !important;
+    font-size: 14px !important;
+    outline: none !important;
+    transition: all 180ms ease-in-out !important;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.02) !important;
+    appearance: none !important;
+    
+    /* Seta customizada elegante à direita */
+    background-image: linear-gradient(45deg, transparent 50%, #8e94a1 50%), linear-gradient(135deg, #8e94a1 50%, transparent 50%) !important;
+    background-position: calc(100% - 20px) calc(1em + 5px), calc(100% - 15px) calc(1em + 5px) !important;
+    background-size: 5px 5px, 5px 5px !important;
+    background-repeat: no-repeat !important;
+    cursor: pointer !important;
 }
 
-.filtro-item select:focus {
-    border-color: #4e73df;
-    background-color: #ffffff;
+.barra-filtros-horizontal .filtro-item select:hover {
+    border-color: rgba(217, 111, 50, 0.3) !important;
+    background-color: #fafafa !important;
+}
+
+.barra-filtros-horizontal .filtro-item select:focus {
+    border-color: var(--cor-primaria) !important;
+    box-shadow: 0 0 0 3px rgba(217, 111, 50, 0.15) !important;
 }
 
 /* ==========================================================================
-   ESTILIZAÇÃO DO RANGE SLIDER DUPLO DE NOTAS (SEM LIMITAÇÕES)
+   O DESIGN PREMIUM DO RANGE SLIDER DO TCC
    ========================================================================== */
 
-/* Container do Item */
-.range-container-item {
-    flex: 1.5;
-    display: flex;
-    flex-direction: column;
+.range-slider-duplo-wrapper {
+    position: relative !important;
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    height: 42px !important; /* Bate na perfeição com a altura dos selects */
+    justify-content: center !important;
 }
 
-/* Alinha a palavra "Nota Final" à esquerda e os "valores" à direita no topo */
-.range-header-label {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    margin-bottom: 8px; /* Dá o mesmo espaço que os outros labels */
+/* Área dos balões numéricos superiores */
+.range-valores-flutuantes {
+    position: absolute !important;
+    top: -24px !important; /* Flutua elegantemente acima da barra */
+    left: 0 !important;
+    width: 100% !important;
+    height: 20px !important;
 }
 
-.range-header-label label {
-    font-size: 13px;
-    font-weight: 600;
-    color: #4e73df;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin: 0;
+.valor-balao {
+    position: absolute !important;
+    transform: translateX(-50%) !important;
+    font-size: 11px !important;
+    font-weight: 800 !important;
+    color: #ffffff !important;
+    background-color: var(--cor-primaria) !important; /* Usa o teu laranja oficial */
+    padding: 2px 6px !important;
+    border-radius: 4px !important;
+    white-space: nowrap !important;
+    box-shadow: 0 2px 6px rgba(217, 111, 50, 0.2) !important;
 }
 
-.nota-valores-label {
-    color: #fd7e14; /* Mudei para a cor laranja do teu tema para casar com os botões! */
-    font-weight: bold;
-    font-size: 14px;
+/* A pista estilizada (A linha horizontal) */
+.range-pista-background {
+    position: relative !important;
+    width: 100% !important;
+    height: 6px !important; /* Linha fina estilo moderno */
+    border-radius: 4px !important;
+    display: flex !important;
+    align-items: center !important;
+    background-color: #e2e8f0 !important; /* Cor cinza padrão para as extremidades */
 }
 
-/* A caixa onde as duas barras se cruzam */
-.range-slider-duplo {
-    position: relative;
-    height: 40px; /* Bate certinho com a altura dos teus selects */
-    display: flex;
-    align-items: center;
-    background-color: #f8f9fc;
-    border: 1px solid #d1d3e2;
-    border-radius: 6px;
-    box-sizing: border-box;
-}
-
-/* Os inputs ficam escondidos milimetricamente dentro da caixa */
+/* Estilo base dos inputs invisíveis */
 .input-range-slider {
-    position: absolute;
-    left: 8px;
-    right: 8px;
-    width: calc(100% - 16px);
-    pointer-events: none;
-    appearance: none;
-    background: none;
-    outline: none;
-    margin: 0;
+    position: absolute !important;
+    width: 100% !important;
+    background: none !important;
+    pointer-events: none !important;
+    appearance: none !important;
+    outline: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    height: 24px !important;
+    z-index: 2 !important;
 }
 
-/* Bolinha estilizada cor de laranja para combinar com o teu botão "Ver detalhes" */
+/* Bolinha de arrastar Branca com Borda Laranja (Webkit) */
 .input-range-slider::-webkit-slider-thumb {
-    height: 16px;
-    width: 16px;
-    border-radius: 50%;
-    background: #fd7e14; 
-    cursor: pointer;
-    pointer-events: auto;
-    appearance: none;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    height: 18px !important;
+    width: 18px !important;
+    border-radius: 50% !important;
+    background: #ffffff !important;
+    border: 3px solid var(--cor-primaria) !important; /* Borda laranja ativa */
+    cursor: pointer !important;
+    pointer-events: auto !important;
+    appearance: none !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15) !important;
+    transition: transform 120ms ease-in-out !important;
 }
 
+.input-range-slider::-webkit-slider-thumb:active {
+    transform: scale(1.25) !important;
+}
+
+/* Bolinha de arrastar para Firefox */
 .input-range-slider::-moz-range-thumb {
-    height: 16px;
-    width: 16px;
-    border-radius: 50%;
-    background: #fd7e14;
-    cursor: pointer;
-    pointer-events: auto;
-    border: none;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    height: 12px !important;
+    width: 12px !important;
+    border-radius: 50% !important;
+    background: #ffffff !important;
+    border: 3px solid var(--cor-primaria) !important;
+    cursor: pointer !important;
+    pointer-events: auto !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Níveis de sobreposição das bolinhas */
+.low-range { z-index: 3 !important; }
+.high-range { z-index: 4 !important; }
+
+/* Legendas fixas inferiores (10 e 20 nas pontas) */
+.range-limites-as-pontas {
+    display: flex !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    position: absolute !important;
+    bottom: -18px !important; /* Encaixa logo abaixo da linha */
+    font-size: 11px !important;
+    color: #94a3b8 !important;
+    font-weight: 700 !important;
 }
 
 /* ==========================================================================
-   CONFIGURAÇÃO RESPONSIVA (MOBILE FIRST / ADAPTAÇÃO)
+   RESPONSIVIDADE (SE ADAPTA AO MOBILE FLUIDAMENTE)
    ========================================================================== */
-
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
     .barra-filtros-horizontal {
-        flex-direction: column; /* Transforma a linha horizontal em lista vertical */
-        align-items: stretch;
-        gap: 16px;
-        padding: 20px;
+        grid-template-columns: repeat(2, 1fr) !important; /* Fica em duas colunas no tablet */
+        gap: 25px 20px !important;
     }
+}
 
-    .range-container-item {
-        flex: none; /* Reseta a proporção no telemóvel */
+@media (max-width: 640px) {
+    .barra-filtros-horizontal {
+        grid-template-columns: 1fr !important; /* Coluna única no smartphone */
+        padding: 20px !important;
+    }
+    .range-slider-duplo-wrapper {
+        margin-top: 15px !important;
+        margin-bottom: 10px !important;
     }
 }

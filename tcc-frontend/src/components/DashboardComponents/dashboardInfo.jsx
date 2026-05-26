@@ -53,7 +53,10 @@ function DashGraficos({ graficData }) {
         <BarGrafic data={graficData.barData} />
       </div>
       <div className="graficoBox">
-        <CircleGrafic data={graficData.circleData} />
+        <CircleGrafic
+          data={graficData.circleData}
+          title="Projetos: Proporção Individual vs. Coletivo"
+        />
       </div>
     </div>
   );

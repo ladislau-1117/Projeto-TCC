@@ -1,0 +1,81 @@
+.homeContainer {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.logsHeader {
+    margin-bottom: 2rem;
+    border-left: 5px solid #D35400;
+    padding-left: 1rem;
+}
+
+.logsHeader h1 {
+    margin: 0;
+    color: #202020;
+    font-size: 2rem;
+}
+
+.logsHeader p {
+    margin: 0.5rem 0 0 0;
+    color: #666;
+}
+
+/* #################### RESPONSIVIDADE #################### */
+
+/* Tablets (até 1024px) */
+@media (max-width: 1024px) {
+    .logsHeader {
+        margin-bottom: 1.5rem;
+        padding-left: 0.8rem;
+    }
+
+    .logsHeader h1 {
+        font-size: 1.7rem;
+    }
+
+    .logsHeader p {
+        font-size: 0.95rem;
+    }
+}
+
+/* Mobile (até 768px) */
+@media (max-width: 768px) {
+    .homeContainer {
+        padding: 10px;
+    }
+
+    .logsHeader {
+        margin-bottom: 1.2rem;
+        padding-left: 0.6rem;
+        border-left-width: 4px;
+    }
+
+    .logsHeader h1 {
+        font-size: 1.4rem;
+    }
+
+    .logsHeader p {
+        font-size: 0.9rem;
+    }
+}
+
+/* Mobile pequeno (até 480px) */
+@media (max-width: 480px) {
+    .homeContainer {
+        padding: 8px;
+    }
+
+    .logsHeader {
+        margin-bottom: 1rem;
+        padding-left: 0.5rem;
+        border-left-width: 3px;
+    }
+
+    .logsHeader h1 {
+        font-size: 1.2rem;
+    }
+
+    .logsHeader p {
+        font-size: 0.8rem;
+    }
+}

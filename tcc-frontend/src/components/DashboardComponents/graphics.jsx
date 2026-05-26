@@ -1,4 +1,4 @@
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
 import "./dashboardInfo.css";
 
 function BarGrafic({ data, title }) {
@@ -20,21 +20,23 @@ function BarGrafic({ data, title }) {
     );
 }
 
-function CircleGrafic({ data, title, label1, label2 }) {
-    // Mesma lógica: 'data' já é o array circleData
+function CircleGrafic({ data, title }) {
     if (!data || data.length === 0) return <p>Sem dados</p>;
 
-    const COLORS = ['var(--cor-primaria)', 'var(--fundo-escuro)', '#252525', '#cc7626'];
+    const COLORS = ["#34495e", "#e67e22"];
 
     return (
         <div className="ContainerGraph">
-            <h4>{title || "Tipo de trabalhos"}</h4>
-            <ResponsiveContainer className="graph" width="100%" height={200}>
+            <h4>{title || "Projetos: Proporção Individual vs. Coletivo"}</h4>
+            <ResponsiveContainer className="graph" width="100%" height={300}>
                 <PieChart>
                     <Pie
                         data={data}
-                        innerRadius={40}
-                        outerRadius={80}
+                        cx="50%"
+                        cy="45%"
+                        innerRadius={65}
+                        outerRadius={100}
+                        paddingAngle={2}
                         dataKey="value"
                         nameKey="name"
                     >
@@ -43,19 +45,9 @@ function CircleGrafic({ data, title, label1, label2 }) {
                         ))}
                     </Pie>
                     <Tooltip />
+                    <Legend verticalAlign="bottom" height={36} />
                 </PieChart>
             </ResponsiveContainer>
-
-            <div style={{ display: "flex", flexDirection: 'column', marginTop: '-30px' }}>
-                <div style={{ display: 'flex' }}>
-                    <div style={{ width: "20px", height: "20px", borderRadius: '50%', background: 'var(--cor-primaria)' }}></div>
-                    <span>{label1 || "Trabalhos em Grupo"}</span>
-                </div>
-                <div style={{ display: 'flex' }}>
-                    <div style={{ width: "20px", height: "20px", borderRadius: '50%', background: 'var(--fundo-escuro)' }}></div>
-                    <span>{label2 || "Trabalhos individuais"}</span>
-                </div>
-            </div>
         </div>
     );
 }

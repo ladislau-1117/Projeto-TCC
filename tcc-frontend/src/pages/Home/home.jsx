@@ -3,6 +3,7 @@ import axios from "axios";
 import DashInfo from "../../components/DashboardComponents/dashboardInfo";
 import { toast } from 'react-hot-toast';
 import { useNavigate } from "react-router-dom";
+import "./home.css";
 
 function Home() {
   const navigate = useNavigate();

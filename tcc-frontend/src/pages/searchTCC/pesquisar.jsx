@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import SearchBar from "../../components/Search/SearchBar/searchBar";
 import ShowResult from "../../components/Search/SearchResult/ShowResult";
@@ -16,7 +16,6 @@ function SearchPage() {
     const [totalPaginas, setTotalPaginas] = useState(0);
     const [termoBusca, setTermoBusca] = useState("");
     const [loading, setLoading] = useState(false);
-    const [cursos, setCursos] = useState([]); // Armazenar cursos vindos da API
 
     // 2. Estados para os Modais
     const [showEditModal, setShowEditModal] = useState(false);
@@ -35,18 +34,21 @@ function SearchPage() {
 
 
 
-    const cursosUnicos = tccs.reduce((acc, current) => {
-        // Verifica se o TCC tem um ID de curso válido e se ele já não está na lista
-        if (current.idCurso && !acc.some(item => item.idCurso === current.idCurso)) {
-            acc.push({
-                idCurso: current.idCurso,
-                nomeCurso: current.curso // Usa o nome que já vem formatado pelo Laravel
-            });
-        }
-        return acc;
-    }, []);
+    const cursosUnicos = useMemo(() => {
+        const cursosMap = new Map();
 
+        tccs.forEach((tcc) => {
+            const id = String(tcc.idCurso || "").trim();
+            const nome = String(tcc.curso || "").trim();
+            const key = nome.toLowerCase();
 
+            if (nome && !cursosMap.has(key)) {
+                cursosMap.set(key, { id, nome });
+            }
+        });
+
+        return Array.from(cursosMap.values());
+    }, [tccs]);
 
     // 3. Lógica Unificada de Busca e Paginação (AGORA COM OS FILTROS LIGADOS)
     useEffect(() => {
@@ -172,6 +174,7 @@ function SearchPage() {
             />
 
             {/* A Tua Nova Barra Horizontal de Filtros Organizada */}
+            {/* A Tua Barra Horizontal de Filtros Super Tunada */}
             <div className="barra-filtros-horizontal">
 
                 {/* Filtro de Ano */}
@@ -185,18 +188,18 @@ function SearchPage() {
                     </select>
                 </div>
 
-                {/* Filtro de Curso */}
+                {/* Filtro de Curso Atualizado (Buscando direto dos TCCs carregados) */}
                 <div className="filtro-item">
                     <label>Curso</label>
                     <select value={filtros.curso} onChange={(e) => handleFiltroChange("curso", e.target.value)}>
                         <option value="todos">Todos os Cursos</option>
                         {cursosUnicos.map(c => (
-                            <option key={c.idCurso} value={c.idCurso}>{c.nomeCurso}</option>
+                            <option key={c.id} value={c.id}>{c.nome}</option>
                         ))}
                     </select>
                 </div>
 
-                {/* Filtro de Estrutura (Individual ou Grupo) */}
+                {/* Filtro de Estrutura */}
                 <div className="filtro-item">
                     <label>Formação</label>
                     <select value={filtros.tipoTrabalho} onChange={(e) => handleFiltroChange("tipoTrabalho", e.target.value)}>
@@ -206,30 +209,60 @@ function SearchPage() {
                     </select>
                 </div>
 
-                {/* O teu Seletor Duplo (Range Slider) de Notas sem limitações */}
+                {/* Range Slider Estilo Premium (Igual à imagem roxa) */}
                 <div className="filtro-item range-container-item">
-                    <div className="range-header-label">
-                        <label>Nota Final</label>
-                        <span className="nota-valores-label">{filtros.notaMin} a {filtros.notaMax} val.</span>
-                    </div>
+                    <label>Nota IPIL</label>
 
-                    <div className="range-slider-duplo">
-                        <input
-                            type="range"
-                            min="10"
-                            max="20"
-                            value={filtros.notaMin}
-                            onChange={handleNotaMin}
-                            className="input-range-slider low-range"
-                        />
-                        <input
-                            type="range"
-                            min="10"
-                            max="20"
-                            value={filtros.notaMax}
-                            onChange={handleNotaMax}
-                            className="input-range-slider high-range"
-                        />
+                    <div className="range-slider-duplo-wrapper">
+                        {/* Indicadores numéricos flutuantes que acompanham as bolinhas */}
+                        <div className="range-valores-flutuantes">
+                            <span
+                                className="valor-balao"
+                                style={{ left: `${((filtros.notaMin - 10) / 10) * 100}%` }}
+                            >
+                                {filtros.notaMin}v
+                            </span>
+                            <span
+                                className="valor-balao"
+                                style={{ left: `${((filtros.notaMax - 10) / 10) * 100}%` }}
+                            >
+                                {filtros.notaMax}v
+                            </span>
+                        </div>
+
+                        <div
+                            className="range-pista-background"
+                            style={{
+                                background: `linear-gradient(to right, 
+                        var(--fundo-claro) ${((filtros.notaMin - 10) / 10) * 100}%, 
+                        var(--cor-primaria) ${((filtros.notaMin - 10) / 10) * 100}%, 
+                        var(--cor-primaria) ${((filtros.notaMax - 10) / 10) * 100}%, 
+                        var(--fundo-claro) ${((filtros.notaMax - 10) / 10) * 100}%)`
+                            }}
+                        >
+                            <input
+                                type="range"
+                                min="10"
+                                max="20"
+                                value={filtros.notaMin}
+                                onChange={handleNotaMin}
+                                className="input-range-slider low-range"
+                            />
+                            <input
+                                type="range"
+                                min="10"
+                                max="20"
+                                value={filtros.notaMax}
+                                onChange={handleNotaMax}
+                                className="input-range-slider high-range"
+                            />
+                        </div>
+
+                        {/* Limites estáticos nas pontas (0 e 20) */}
+                        <div className="range-limites-as-pontas">
+                            <span>10</span>
+                            <span>20</span>
+                        </div>
                     </div>
                 </div>
 

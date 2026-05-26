@@ -64,27 +64,47 @@
     height: 300px;
 
 }
-.graph{
-    width: 100%;
-    height: 100%;
-    margin-top: -20px;
+.infoMain{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+    margin-top: 30px;
+    margin-bottom: 25px;
 }
 
-
-
-
-
-
-/*#################### Tabela do Dashborard ####################*/
-
-
-.titleTable{
-    background-color: #bebebe;
-    padding: 12px;
+.divDashInfo{
+    background: white;
+    border-radius: 12px;
+    border: 1px solid var(--cor-primaria);
+    padding: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+    border-left: 10px solid var(--cor-primaria);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
-.tableContainer{
-    background-color: white;
-    border: 1px solid var(--cor-primaria) ;
+
+.divDashInfo h3:first-child{
+    color: var(--texto-escuro);
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin: 0 0 5px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.divDashInfo > div{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px;
+}
+
+.divDashInfo > div h3{
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--texto-escuro);
+    margin: 0;
 }
 .tabla{
     width: 100%;
@@ -102,6 +122,161 @@ td, th{
 }
 .tabla tbody tr:hover {
     background-color: #dadada;
+}
+
+/* #################### RESPONSIVIDADE #################### */
+
+/* Tablets (até 1024px) */
+@media (max-width: 1024px) {
+    .infoMain {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .graficosMain {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .graficosMain > div {
+        height: 300px;
+    }
+
+    .ContainerGraph {
+        height: 250px;
+    }
+}
+
+/* Mobile (até 768px) */
+@media (max-width: 768px) {
+    .infoMain {
+        grid-template-columns: 1fr;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .divDashInfo {
+        padding: 12px;
+    }
+
+    .divDashInfo h3:first-child {
+        font-size: 0.9rem;
+    }
+
+    .divDashInfo > div h3 {
+        font-size: 1.5rem;
+    }
+
+    .graficosMain {
+        flex-direction: column;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .graficosMain > div {
+        height: 280px;
+        padding: 12px;
+    }
+
+    .ContainerGraph {
+        height: 230px;
+    }
+
+    .graph {
+        margin-top: -15px;
+    }
+
+    .sectionHistoric {
+        margin-top: 20px;
+    }
+
+    .sectionHistoric h3 {
+        font-size: 1.1rem;
+        margin-bottom: 15px;
+    }
+
+    .tableContainer {
+        overflow-x: auto;
+    }
+
+    .tabla {
+        font-size: 0.85rem;
+    }
+
+    td, th {
+        padding: 8px 5px;
+    }
+}
+
+/* Mobile pequeno (até 480px) */
+@media (max-width: 480px) {
+    .infoMain {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-bottom: 15px;
+    }
+
+    .divDashInfo {
+        padding: 10px;
+        border-radius: 10px;
+    }
+
+    .divDashInfo h3:first-child {
+        font-size: 0.8rem;
+        margin: 0;
+    }
+
+    .divDashInfo > div {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+
+    .divDashInfo > div h3 {
+        font-size: 1.2rem;
+        margin: 0;
+    }
+
+    .graficosMain {
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 15px;
+    }
+
+    .graficosMain > div {
+        height: 250px;
+        padding: 10px;
+        border-radius: 10px;
+    }
+
+    .ContainerGraph {
+        height: 200px;
+    }
+
+    .graph {
+        margin-top: -10px;
+    }
+
+    .sectionHistoric {
+        margin-top: 15px;
+    }
+
+    .sectionHistoric h3 {
+        font-size: 1rem;
+        margin-bottom: 10px;
+    }
+
+    .tabla {
+        font-size: 0.75rem;
+    }
+
+    td, th {
+        padding: 6px 4px;
+    }
+
+    .titleTable {
+        padding: 8px;
+    }
 }
 
 
