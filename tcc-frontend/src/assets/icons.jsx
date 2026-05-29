@@ -19,7 +19,19 @@ export const LocationIcon = () => (
     <path d="M12 13C13.6569 13 15 11.6569 15 10C15 8.34315 13.6569 7 12 7C10.3431 7 9 8.34315 9 10C9 11.6569 10.3431 13 12 13Z" stroke="" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
   </svg>
 
+);
+
+
+export const FileIconMini = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginRight: '8px' }}>
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+    <polyline points="14 2 14 8 20 8"></polyline>
+    <line x1="16" y1="13" x2="8" y2="13"></line>
+    <line x1="16" y1="17" x2="8" y2="17"></line>
+    <polyline points="10 9 9 9 8 9"></polyline>
+  </svg>
 )
+
 
 /*######## icones dos cards do Dashboard ############*/
 
@@ -72,8 +84,8 @@ export const GraficIcon = () => (
 
 export const MenuIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="30px" height="30px" viewBox="0 0 24 24" fill="none">
-<path d="M4 6H20M4 12H20M4 18H20" stroke="var(--fundo-claro)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>
+    <path d="M4 6H20M4 12H20M4 18H20" stroke="var(--fundo-claro)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+  </svg>
 
 )
 
@@ -113,7 +125,7 @@ export const RegistIcon = () => (
 )
 
 export const Statistics = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="var(--fundo-claro)" height="24px" width="24px" version="1.1" id="Capa_1" viewBox="0 0 494.938 494.938" >
+  <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" height="24px" width="24px" version="1.1" id="Capa_1" viewBox="0 0 494.938 494.938" >
     <g>
       <path d="M469.375,445.01H25.567c-13.801,0-24.966,11.173-24.966,24.965c0,13.789,11.165,24.963,24.966,24.963h443.808   c13.78,0,24.961-11.174,24.961-24.963C494.336,456.183,483.155,445.01,469.375,445.01z" />
       <path d="M50.221,241.837c-5.557,0-10.074,4.519-10.074,10.085V401.64c0,5.566,4.518,10.086,10.074,10.086h58.886   c5.571,0,10.091-4.52,10.091-10.086V251.922c0-5.566-4.52-10.085-10.091-10.085H50.221z" />
@@ -136,17 +148,17 @@ export const CatalogIcon = () => (
 )
 
 export const LogRegistIcon = () => (
- <svg xmlns="http://www.w3.org/2000/svg" fill="var(--fundo-claro)" width="24px" height="24px" viewBox="0 0 16 16" id=""  stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1">
-  <path id="Path_184" data-name="Path 184" d="M57.5,41a.5.5,0,0,0-.5.5V43H47V31h2v.5a.5.5,0,0,0,.5.5h5a.5.5,0,0,0,.5-.5V31h2v.5a.5.5,0,0,0,1,0v-1a.5.5,0,0,0-.5-.5H55v-.5A1.5,1.5,0,0,0,53.5,28h-3A1.5,1.5,0,0,0,49,29.5V30H46.5a.5.5,0,0,0-.5.5v13a.5.5,0,0,0,.5.5h11a.5.5,0,0,0,.5-.5v-2A.5.5,0,0,0,57.5,41ZM50,29.5a.5.5,0,0,1,.5-.5h3a.5.5,0,0,1,.5.5V31H50Zm11.854,4.646-2-2a.5.5,0,0,0-.708,0l-6,6A.5.5,0,0,0,53,38.5v2a.5.5,0,0,0,.5.5h2a.5.5,0,0,0,.354-.146l6-6A.5.5,0,0,0,61.854,34.146ZM54,40V38.707l5.5-5.5L60.793,34.5l-5.5,5.5Zm-2,.5a.5.5,0,0,1-.5.5h-2a.5.5,0,0,1,0-1h2A.5.5,0,0,1,52,40.5Zm0-3a.5.5,0,0,1-.5.5h-2a.5.5,0,0,1,0-1h2A.5.5,0,0,1,52,37.5ZM54.5,35h-5a.5.5,0,0,1,0-1h5a.5.5,0,0,1,0,1Z" transform="translate(-46 -28)"/>
-</svg>
+  <svg xmlns="http://www.w3.org/2000/svg" fill="var(--fundo-claro)" width="24px" height="24px" viewBox="0 0 16 16" id="" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1">
+    <path id="Path_184" data-name="Path 184" d="M57.5,41a.5.5,0,0,0-.5.5V43H47V31h2v.5a.5.5,0,0,0,.5.5h5a.5.5,0,0,0,.5-.5V31h2v.5a.5.5,0,0,0,1,0v-1a.5.5,0,0,0-.5-.5H55v-.5A1.5,1.5,0,0,0,53.5,28h-3A1.5,1.5,0,0,0,49,29.5V30H46.5a.5.5,0,0,0-.5.5v13a.5.5,0,0,0,.5.5h11a.5.5,0,0,0,.5-.5v-2A.5.5,0,0,0,57.5,41ZM50,29.5a.5.5,0,0,1,.5-.5h3a.5.5,0,0,1,.5.5V31H50Zm11.854,4.646-2-2a.5.5,0,0,0-.708,0l-6,6A.5.5,0,0,0,53,38.5v2a.5.5,0,0,0,.5.5h2a.5.5,0,0,0,.354-.146l6-6A.5.5,0,0,0,61.854,34.146ZM54,40V38.707l5.5-5.5L60.793,34.5l-5.5,5.5Zm-2,.5a.5.5,0,0,1-.5.5h-2a.5.5,0,0,1,0-1h2A.5.5,0,0,1,52,40.5Zm0-3a.5.5,0,0,1-.5.5h-2a.5.5,0,0,1,0-1h2A.5.5,0,0,1,52,37.5ZM54.5,35h-5a.5.5,0,0,1,0-1h5a.5.5,0,0,1,0,1Z" transform="translate(-46 -28)" />
+  </svg>
 
 )
 
 export const LogoutIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="30px" height="30px" viewBox="0 0 24 24" fill="none" >
-<path d="M9.00195 7C9.01406 4.82497 9.11051 3.64706 9.87889 2.87868C10.7576 2 12.1718 2 15.0002 2L16.0002 2C18.8286 2 20.2429 2 21.1215 2.87868C22.0002 3.75736 22.0002 5.17157 22.0002 8L22.0002 16C22.0002 18.8284 22.0002 20.2426 21.1215 21.1213C20.2429 22 18.8286 22 16.0002 22H15.0002C12.1718 22 10.7576 22 9.87889 21.1213C9.11051 20.3529 9.01406 19.175 9.00195 17" stroke="var(--cor-primaria)" stroke-width="1.5" stroke-linecap="round"/>
-<path d="M15 12L2 12M2 12L5.5 9M2 12L5.5 15" stroke="var(--cor-primaria)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>
+    <path d="M9.00195 7C9.01406 4.82497 9.11051 3.64706 9.87889 2.87868C10.7576 2 12.1718 2 15.0002 2L16.0002 2C18.8286 2 20.2429 2 21.1215 2.87868C22.0002 3.75736 22.0002 5.17157 22.0002 8L22.0002 16C22.0002 18.8284 22.0002 20.2426 21.1215 21.1213C20.2429 22 18.8286 22 16.0002 22H15.0002C12.1718 22 10.7576 22 9.87889 21.1213C9.11051 20.3529 9.01406 19.175 9.00195 17" stroke="var(--cor-primaria)" stroke-width="1.5" stroke-linecap="round" />
+    <path d="M15 12L2 12M2 12L5.5 9M2 12L5.5 15" stroke="var(--cor-primaria)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+  </svg>
 )
 
 
@@ -187,7 +199,7 @@ export const DeleteTcc = () => (
 
 export const EditTcc = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" fill="none">
-<path opacity="0" d="M4 20H8L18 10L14 6L4 16V20Z" fill="#fff"/>
-<path d="M12 20H20.5M18 10L21 7L17 3L14 6M18 10L8 20H4V16L14 6M18 10L14 6" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>
+    <path opacity="0" d="M4 20H8L18 10L14 6L4 16V20Z" fill="#fff" />
+    <path d="M12 20H20.5M18 10L21 7L17 3L14 6M18 10L8 20H4V16L14 6M18 10L14 6" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+  </svg>
 )

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import CircleLoad from '../../components/common/CircleLoad';
 import './registerAllLogs.css';
 
 const LogsPage = () => {
@@ -46,7 +47,11 @@ const LogsPage = () => {
     };
 
     if (estaCarregando) {
-        return <div className="logsContainer"><p>A carregar registos de auditoria...</p></div>;
+        return (
+            <div className="logsContainer logsLoadingWrapper">
+                <CircleLoad mensagem="A carregar registos de auditoria..." />
+            </div>
+        );
     }
 
     return (

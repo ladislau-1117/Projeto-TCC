@@ -1,5 +1,5 @@
 import React from 'react';
-
+import './CircleLoad.css';
 
 const CircleLoad = ({ mensagem = "Carregando..." }) => {
     return (

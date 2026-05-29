@@ -1,34 +1,34 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
+import html2pdf from "html2pdf.js";
 import { ResponsiveContainer, XAxis, YAxis, Tooltip, BarChart, Bar, Cell, PieChart, Pie } from "recharts";
+import TemplateRelatorioPDF from "./RelatorioPDF/TemplateRelatorioPDF";
+import CircleLoad from "../../components/common/CircleLoad";
+import { FileIconMini } from "../../assets/icons";
 import "./analiseAcademica.css";
 
 function AppAnaliseAcademica() {
-    // 1. Estados de Dados Operacionais
+    // ... teus estados anteriores mantêm-se exatamente iguais ...
     const [totalizadores, setTotalizadores] = useState(null);
     const [dadosAno, setDadosAno] = useState([]);
     const [dadosOrientadores, setDadosOrientadores] = useState([]);
     const [dadosExcelencia, setDadosExcelencia] = useState([]);
     const [dadosEstruturaTipo, setDadosEstruturaTipo] = useState({ grafico: [], tabela: [] });
-    const [listaCursos, setListaCursos] = useState([]); // Armazena cursos da base de dados
+    const [listaCursos, setListaCursos] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [filtros, setFiltros] = useState({ ano: "todos", curso: "todos", tipoTrabalho: "todos" });
 
-    // 2. Estado Único para os Filtros do Dashboard
-    const [filtros, setFiltros] = useState({
-        ano: "todos",
-        curso: "todos",
-        tipoTrabalho: "todos"
-    });
+    // NOVO ESTADO: Controla a abertura do Modal de Impressão
+    const [showPreviewModal, setShowPreviewModal] = useState(false);
 
-    const CORES_DONUT = ["#34495e", "#e67e22"]; 
+    const CORES_DONUT = ["#34495e", "#e67e22"];
 
-    // 3. Carregar Cursos uma única vez ao montar a página
     useEffect(() => {
         const carregarCursosEstaticos = async () => {
             try {
-                const res = await axios.get("http://127.0.0.1:8000/api/tccs/form-data");
-                setListaCursos(res.data.cursos || []);
+                const res = await axios.get("http://127.0.0.1:8000/api/cursos");
+                setListaCursos(res.data);
             } catch (err) {
                 console.error("Erro ao procurar cursos para filtros:", err);
             }
@@ -36,18 +36,15 @@ function AppAnaliseAcademica() {
         carregarCursosEstaticos();
     }, []);
 
-    // 4. Efeito Reativo: Sempre que qualquer filtro mudar, recarrega o Dashboard automaticamente
     useEffect(() => {
         const carregarDadosDashboard = async () => {
             setLoading(true);
             try {
-                // Monta os query params baseados no estado atual dos filtros
                 const params = {
                     anoDefesa: filtros.ano,
                     idCurso: filtros.curso,
                     tipoTrabalho: filtros.tipoTrabalho
                 };
-
                 const [resTotalizadores, resAno, resOrientadores, resExcelencia, resTipo] = await Promise.all([
                     axios.get("http://127.0.0.1:8000/api/analise-academica/totalizadores", { params }),
                     axios.get("http://127.0.0.1:8000/api/analise-academica/evolucao-ano", { params }),
@@ -55,46 +52,105 @@ function AppAnaliseAcademica() {
                     axios.get("http://127.0.0.1:8000/api/analise-academica/orientadores-excelencia", { params }),
                     axios.get("http://127.0.0.1:8000/api/analise-academica/estatisticas-tipo", { params })
                 ]);
-
                 setTotalizadores(resTotalizadores.data);
                 setDadosAno(resAno.data);
                 setDadosOrientadores(resOrientadores.data);
                 setDadosExcelencia(resExcelencia.data);
                 setDadosEstruturaTipo(resTipo.data);
             } catch (error) {
-                console.error("Erro ao atualizar métricas do painel:", error);
+                console.error("Erro ao atualizar métricas:", error);
                 toast.error("Erro ao atualizar os dados analíticos.");
             } finally {
                 setLoading(false);
             }
         };
-
         carregarDadosDashboard();
     }, [filtros]);
 
-    // Manipulador de alterações dos selects
     const handleFiltroChange = (campo, valor) => {
-        setFiltros(prev => ({
-            ...prev,
-            [campo]: valor
-        }));
+        setFiltros(prev => ({ ...prev, [campo]: valor }));
     };
 
-    // Função auxiliar para construir o rótulo de tempo dinâmico nos subtítulos e kpis
     const obterSufixoContexto = () => {
         return filtros.ano === "todos" ? "Globais" : `em ${filtros.ano}`;
     };
 
+
+
+
+    const gerarEBaixarPdf = () => {
+        // 1. Capturar o elemento HTML da nossa folha A4 do Preview
+        const elemento = document.getElementById("area-tcc-relatorio-impressao");
+
+        if (!elemento) {
+            toast.error("Erro ao localizar a área de impressão.");
+            return;
+        }
+
+        // 2. Definir um nome inteligente para o ficheiro com base nos filtros atuais
+        const sufixoAno = filtros.ano === "todos" ? "Global" : filtros.ano;
+        const nomeFicheiro = `Relatorio_Academico_IPIL_${sufixoAno}.pdf`;
+
+        // 3. Configurações essenciais para o PDF sair perfeito em formato A4 institucional
+        const opcoes = {
+            margin: [15, 15, 15, 15], // Margens de segurança: topo, esquerda, fundo, direita (em mm)
+            filename: nomeFicheiro,
+            image: { type: 'jpeg', quality: 0.98 }, // Qualidade de elementos gráficos que possam existir
+            html2canvas: {
+                scale: 2, // Aumenta a resolução para os textos não saírem pixelizados (efeito retina)
+                useCORS: true, // Permite carregar imagens externas ou fontes se houver necessidade
+                letterRendering: true
+            },
+            jsPDF: {
+                unit: 'mm',
+                format: 'a4',
+                orientation: 'portrait' // Modo Vertical (Folha em pé)
+            },
+            pagebreak: { mode: ['avoid-all', 'css'] } // Evita quebras feias de texto ao meio nas tabelas
+        };
+
+        // Criar um Toast de processamento (feedback visual para o utilizador sabe que está a processar)
+        const toastId = toast.loading("A processar e a gerar o PDF institucional...");
+
+        // 4. Executar a conversão e o download automático
+        html2pdf()
+            .set(opcoes)
+            .from(elemento)
+            .save()
+            .then(() => {
+                toast.success("Relatório transferido com sucesso!", { id: toastId });
+                setShowPreviewModal(false); // Fecha o modal após o download terminar com sucesso
+            })
+            .catch((erro) => {
+                console.error("Erro na conversão para PDF:", erro);
+                toast.error("Houve um erro ao exportar o documento.", { id: toastId });
+            });
+    };
+
+
+
+
+
+
+
+
+
     return (
         <div className="dashboardContainer">
-            <div className="dashboardHeader">
-                <h1>Análise Académica</h1>
-                <span>Dados detalhados da Coordenação de Informática</span>
+            {/* HEADERS ATUALIZADO COM O BOTÃO DE EVENTO */}
+            <div className="dashboardHeader" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div>
+                    <h1>Análise Académica</h1>
+                    <span>Dados detalhados da Coordenação de Informática</span>
+                </div>
+                <button className="btnGerarPdf" onClick={() => setShowPreviewModal(true)}>
+                    <FileIconMini />
+                    Gerar Relatório PDF
+                </button>
             </div>
 
-            {/* BARRA DE FILTROS REUTILIZADA DA SEARCHPAGE */}
+            {/* BARRA DE FILTROS */}
             <div className="barra-filtros-horizontal" style={{ marginTop: "20px", marginBottom: "5px" }}>
-                {/* Filtro de Ano */}
                 <div className="filtro-item">
                     <label>Ano de Defesa</label>
                     <select value={filtros.ano} onChange={(e) => handleFiltroChange("ano", e.target.value)}>
@@ -105,7 +161,6 @@ function AppAnaliseAcademica() {
                     </select>
                 </div>
 
-                {/* Filtro de Curso Dinâmico */}
                 <div className="filtro-item">
                     <label>Curso</label>
                     <select value={filtros.curso} onChange={(e) => handleFiltroChange("curso", e.target.value)}>
@@ -116,7 +171,6 @@ function AppAnaliseAcademica() {
                     </select>
                 </div>
 
-                {/* Filtro de Estrutura de Trabalho */}
                 <div className="filtro-item">
                     <label>Formação</label>
                     <select value={filtros.tipoTrabalho} onChange={(e) => handleFiltroChange("tipoTrabalho", e.target.value)}>
@@ -127,28 +181,29 @@ function AppAnaliseAcademica() {
                 </div>
             </div>
 
-            {loading && <div className="loadingIndicadorSuave">Atualizando dados...</div>}
-
-            {/* SEÇÃO 1: Totalizadores Dinâmicos */}
-            <div className="totalizadoresGrid">
+            {loading ? (
+                <div className="loadingDashboard">
+                    <CircleLoad mensagem="Atualizando dados..." />
+                </div>
+            ) : (
+                <>
+                    {/* SEÇÃO 1: Totalizadores Dinâmicos */}
+                    <div className="totalizadoresGrid">
                 <div className="cardKpi">
                     <h4>Total de TCCs {obterSufixoContexto()}</h4>
                     <span className="kpiValue">{totalizadores?.totalTccs}</span>
                     <p className="kpiSub">registos ativos</p>
                 </div>
-
                 <div className="cardKpi">
                     <h4>Média de Notas {obterSufixoContexto()}</h4>
                     <span className="kpiValue">{totalizadores?.mediaNotas}</span>
                     <p className="kpiSub">valores de 0 a 20</p>
                 </div>
-
                 <div className="cardKpi">
                     <h4>Curso Líder {obterSufixoContexto()}</h4>
                     <span className="kpiValueText">{totalizadores?.cursoLider}</span>
                     <p className="kpiSub">maior volume de projetos</p>
                 </div>
-
                 <div className="cardKpi">
                     <h4>Mais Ativo {obterSufixoContexto()}</h4>
                     <span className="kpiValueText">{totalizadores?.orientadorMaisAtivo?.nome}</span>
@@ -189,20 +244,20 @@ function AppAnaliseAcademica() {
                                 </tr>
                             </thead>
                             <tbody>
-                                    {dadosExcelencia.slice(0, 5).map((row, index) => (
-                                        <tr key={index}>
-                                            <td>{row.nome}</td>
-                                            <td>{row.totalTrabalhos}</td>
-                                            <td className="tableBoldCell">{row.mediaNotas} v.</td>
-                                            <td>
-                                                <span className={`statusBadge ${parseFloat(row.mediaNotas) >= 16 ? "badgeExcelent" : "badgeWarning"}`}>
-                                                    {parseFloat(row.mediaNotas) >= 16 ? "Excelente" : "Satisfatório"}
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                                {dadosExcelencia.slice(0, 5).map((row, index) => (
+                                    <tr key={index}>
+                                        <td>{row.nome}</td>
+                                        <td>{row.totalTrabalhos}</td>
+                                        <td className="tableBoldCell">{row.mediaNotas} v.</td>
+                                        <td>
+                                            <span className={`statusBadge ${parseFloat(row.mediaNotas) >= 16 ? "badgeExcelent" : "badgeWarning"}`}>
+                                                {parseFloat(row.mediaNotas) >= 16 ? "Excelente" : "Satisfatório"}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -232,7 +287,7 @@ function AppAnaliseAcademica() {
                                 </PieChart>
                             </ResponsiveContainer>
                         </div>
-                        
+
                         <div className="tableResponsiveWrapper flexTable">
                             <table className="dashboardTable">
                                 <thead>
@@ -275,6 +330,49 @@ function AppAnaliseAcademica() {
                     </div>
                 </div>
             </div>
+
+
+            
+            {showPreviewModal && (
+                <div className="pdf-overlay-backdrop">
+                    <div className="pdf-modal-janela-operante">
+
+                        {/* Barra de Ações Superior do Preview */}
+                        <div className="pdf-modal-barra-acoes">
+                            <div className="pdf-modal-info-titulo">
+                                <h4>Visualização Prévia do Documento</h4>
+                                <p>Confirme as informações antes de exportar</p>
+                            </div>
+                            <div className="pdf-modal-grupo-botoes">
+                                <button className="pdf-btn-acao-cancelar" onClick={() => setShowPreviewModal(false)}>
+                                    Fechar
+                                </button>
+                                <button className="pdf-btn-acao-confirmar" onClick={gerarEBaixarPdf}>
+                                    Confirmar e Baixar PDF
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Área do Papel Virtual A4 */}
+                        <div className="pdf-modal-corpo-scroll">
+                            <div className="pdf-papel-sombreado-a4" id="area-tcc-relatorio-impressao">
+                                <TemplateRelatorioPDF
+                                    totalizadores={totalizadores}
+                                    dadosOrientadores={dadosOrientadores}
+                                    dadosExcelencia={dadosExcelencia}
+                                    dadosEstruturaTipo={dadosEstruturaTipo}
+                                    filtros={filtros}
+                                    listaCursos={listaCursos}
+                                />
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            )}
+                </>
+            )}
+
         </div>
     );
 }

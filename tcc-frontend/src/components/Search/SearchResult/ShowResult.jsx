@@ -4,7 +4,7 @@ import CircleLoad from '../../common/CircleLoad';
 import './showResult.css';
 
 
-function ShowResult({tcc, items, loading, query, onDeleteClick, onDetailsClick, onEdit }) {
+function ShowResult({tcc, items, loading, query, onDeleteClick, onDetailsClick, onEdit, hasSearched }) {
 
     const safeItems = Array.isArray(items) ? items : [];
     // Se estiver a carregar, mostra apenas a mensagem de espera
@@ -17,7 +17,7 @@ function ShowResult({tcc, items, loading, query, onDeleteClick, onDetailsClick, 
     }
 
 
-    if (!items || items.length === 0) {
+    if (hasSearched && (!items || items.length === 0)) {
         return (
             <div className='divTccNotFound'>
                 <div className='tccNotFound'>
@@ -27,6 +27,10 @@ function ShowResult({tcc, items, loading, query, onDeleteClick, onDetailsClick, 
                 </div>
             </div>
         );
+    }
+
+    if (!items || items.length === 0) {
+        return null;
     }
 
     return (

@@ -29,32 +29,32 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
             <nav>
                 
-                <NavLink to="/pages/home" className="navItem" end>
+                <NavLink to="/pages/home" className={({ isActive }) => isActive ? "navItem active" : "navItem"} end>
                     <HomeIcon /> 
                     {isOpen && <span>Dashboard</span>}
                 </NavLink>
 
-                <NavLink to="/pages/pesquisar" className="navItem">
+                <NavLink to="/pages/pesquisar" className={({ isActive }) => isActive ? "navItem active" : "navItem"}>
                     <SearchIcon />
                     {isOpen && <span>Pesquisar</span>}
                 </NavLink>
 
-                <NavLink to="/pages/registerTcc" className="navItem">
+                <NavLink to="/pages/registerTcc" className={({ isActive }) => isActive ? "navItem active" : "navItem"}>
                     <RegistIcon /> 
                     {isOpen && <span>Registar</span>}
                 </NavLink>
 
-                <NavLink to="/pages/analiseAcademica" className="navItem">
+                <NavLink to="/pages/analiseAcademica" className={({ isActive }) => isActive ? "navItem active" : "navItem"}>
                     <Statistics /> 
                     {isOpen && <span>Análise Acadêmica</span>}
                 </NavLink>
 
-                <NavLink to="/pages/historicMov" className="navItem">
+                <NavLink to="/pages/historicMov" className={({ isActive }) => isActive ? "navItem active" : "navItem"}>
                     <CatalogIcon />
                     {isOpen && <span>Registro de Actividade</span>}
                 </NavLink>
 
-                <NavLink to="/pages/registLog" className="navItem">
+                <NavLink to="/pages/registLog" className={({ isActive }) => isActive ? "navItem active" : "navItem"}>
                     <LogRegistIcon />
                     {isOpen && <span>Registro de Login</span>}
                 </NavLink>

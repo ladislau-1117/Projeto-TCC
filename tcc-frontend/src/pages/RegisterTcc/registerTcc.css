@@ -1,16 +1,14 @@
-
 .gridMain{
     display: grid;
     gap: 30px;
-    grid-template-columns: repeat(2, 2fr);
-    
+    grid-template-columns: repeat(2, 1fr);
 }
 
 .headerRegist{
     margin-bottom: 2rem;
-  border-left: 5px solid #D35400; /* O seu laranja principal */
-  padding-left: 1rem;
-  justify-content: space-between;
+    border-left: 5px solid #D35400;
+    padding-left: 1rem;
+    justify-content: space-between;
 }
 
 .containerRegister{
@@ -18,10 +16,7 @@
     border-radius: 15px;
     padding: 15px;
     background-color: white;
-    
-
 }
-
 
 .containerRegister > div{
     display: flex;
@@ -33,13 +28,17 @@
     display: flex;
     flex-direction: column;
 }
+
+.section-title {
+    margin-bottom: 20px;
+}
+
 .gridInput{
     display: grid;
-    grid-template-columns: repeat(2, 2fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 20px;
     width: 100%;
 }
-
 
 .btn-add-autor {
     background-color: transparent;
@@ -67,11 +66,9 @@
     border: transparent;
 }
 
-
 .inputContainer{
     position: relative;
     width: 100%;
-
 }
 
 .inputContainer > input{
@@ -95,7 +92,6 @@
     appearance: none;
 }
 
-
 label{
     position: absolute;
     left: 10px;
@@ -105,13 +101,11 @@ label{
     background: transparent;
     padding: 0px 5px;
     pointer-events: none;
-    transition: all 0.2s ease ;
+    transition: all 0.2s ease;
 }
 
-/*Para input*/
-.inputContainer > input:focus + label, 
+.inputContainer > input:focus + label,
 .inputContainer > input:not(:placeholder-shown) + label,
-/*Para Select*/
 .inputContainer select:focus + label,
 .inputContainer select:valid + label{
     top: 0;
@@ -119,9 +113,7 @@ label{
     font-size: 14px;
     color: var(--cor-primaria);
     background: white;
-
 }
-
 
 .btnDraft{
     border: none;
@@ -129,33 +121,36 @@ label{
     color: var(--texto-claro);
     border-radius: 10px;
     padding: 10px 20px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
 }
 
-
-
-
-
-
-
-
+.btnDraft:hover {
+    background-color: #b84500;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(211, 84, 0, 0.3);
+}
 
 /* Estilo do Fundo Opaco */
 .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
-    right: 0; 
-    bottom: 0; 
+    right: 0;
+    bottom: 0;
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.75);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 9999; 
+    z-index: 9999;
     backdrop-filter: blur(0px);
+    padding: 20px;
 }
-
 
 .modal- {
     background-color: var(--fundo-claro);
@@ -165,6 +160,8 @@ label{
     border-radius: 12px;
     box-shadow: 0 15px 35px rgba(0,0,0,0.4);
     position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
 }
 
 .modalHeader {
@@ -178,6 +175,16 @@ label{
     background-color: transparent;
 }
 
+.preview-body {
+    word-break: break-word;
+}
+
+.preview-body p {
+    margin-bottom: 12px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
 .modal-actions {
     display: flex;
     gap: 10px;
@@ -185,7 +192,7 @@ label{
 }
 
 .btn-save {
-    background-color: var(--cor-primaria); /* Laranja do seu sistema */
+    background-color: var(--cor-primaria);
     color: white;
     border: none;
     padding: 12px 20px;
@@ -193,13 +200,217 @@ label{
     border-radius: 6px;
     cursor: pointer;
     font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.btn-save:hover {
+    background-color: #b84500;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(211, 84, 0, 0.3);
 }
 
 .btn-edit {
     background-color: var(--fundo-claro);
     color: var(--texto-escuro);
-    border: none;
+    border: 1px solid var(--cor-primaria);
     padding: 12px 20px;
     border-radius: 6px;
     cursor: pointer;
+    flex: 1;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-edit:hover {
+    background-color: #f5f5f5;
+}
+
+/* ========== RESPONSIVIDADE ========== */
+
+/* Tablets (768px a 1024px) */
+@media (max-width: 1024px) {
+    .gridMain {
+        grid-template-columns: 1fr;
+        gap: 25px;
+    }
+
+    .gridInput {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .containerRegister {
+        padding: 12px;
+    }
+}
+
+/* Tablets pequenos (480px a 768px) */
+@media (max-width: 768px) {
+    .gridInput {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .containerRegister {
+        padding: 12px;
+        border-radius: 10px;
+    }
+
+    .section-title {
+        margin-bottom: 15px;
+    }
+
+    .section-title h3 {
+        font-size: 1.1rem;
+    }
+
+    .modal- {
+        width: 95%;
+        padding: 20px;
+        max-width: none;
+    }
+
+    .modal-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .btn-save, .btn-edit {
+        flex: none;
+        width: 100%;
+    }
+
+    .autores-section {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .autor-item {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 0 !important;
+    }
+
+    .btn-remove-autor {
+        align-self: flex-end;
+        margin-top: -35px;
+        margin-right: 5px;
+    }
+
+    .inputContainer > input,
+    .inputContainer > select {
+        font-size: 16px;
+        padding: 10px;
+    }
+
+    label {
+        font-size: 0.85rem;
+    }
+
+    .btnDraft {
+        padding: 12px 15px;
+        font-size: 0.95rem;
+    }
+}
+
+/* Telefones pequenos (até 480px) */
+@media (max-width: 480px) {
+    .headerRegist {
+        margin-bottom: 1.5rem;
+        padding-left: 0.75rem;
+    }
+
+    .headerRegist h1 {
+        font-size: 1.5rem;
+    }
+
+    .headerRegist p {
+        font-size: 0.9rem;
+    }
+
+    .gridMain {
+        gap: 20px;
+    }
+
+    .containerRegister {
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+
+    .divInputs {
+        gap: 10px;
+    }
+
+    .gridInput {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .section-title {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        margin-bottom: 12px;
+    }
+
+    .section-title h3 {
+        font-size: 1rem;
+        margin: 0;
+    }
+
+    .inputContainer {
+        margin-bottom: 5px;
+    }
+
+    .inputContainer > input,
+    .inputContainer > select {
+        font-size: 16px;
+        padding: 10px;
+    }
+
+    label {
+        font-size: 0.8rem;
+        left: 8px;
+    }
+
+    .btn-add-autor {
+        width: 100%;
+        justify-content: center;
+        padding: 10px 12px;
+        font-size: 0.85rem;
+    }
+
+    .btnDraft {
+        padding: 10px 12px;
+        font-size: 0.9rem;
+    }
+
+    .modal- {
+        width: 95%;
+        padding: 15px;
+        border-radius: 10px;
+    }
+
+    .modalHeader {
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+    }
+
+    .modalHeader h2 {
+        font-size: 1.1rem;
+    }
+
+    .preview-body p {
+        font-size: 0.9rem;
+        margin-bottom: 10px;
+    }
+
+    .modal-actions {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .btn-save, .btn-edit {
+        padding: 10px 15px;
+        font-size: 0.9rem;
+    }
 }

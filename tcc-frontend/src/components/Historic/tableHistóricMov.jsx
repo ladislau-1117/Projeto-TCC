@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import CircleLoad from "../common/CircleLoad";
 
 const TableHistoricMov = () => {
     const [logs, setLogs] = useState([]);
@@ -38,7 +39,9 @@ const TableHistoricMov = () => {
     return (
         <div className="logsContainer">
             {loading ? (
-                <div className="loadingState">Carregando atividades...</div>
+                <div className="loader-container">
+                    <CircleLoad mensagem="Carregando atividades..." />
+                </div>
             ) : (
                 <div className="tableWrapper">
                     <table className="logsTable">

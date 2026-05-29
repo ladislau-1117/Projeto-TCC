@@ -16,6 +16,7 @@ function SearchPage() {
     const [totalPaginas, setTotalPaginas] = useState(0);
     const [termoBusca, setTermoBusca] = useState("");
     const [loading, setLoading] = useState(false);
+    const [hasSearched, setHasSearched] = useState(false);
 
     // 2. Estados para os Modais
     const [showEditModal, setShowEditModal] = useState(false);
@@ -28,7 +29,7 @@ function SearchPage() {
         ano: "todos",
         curso: "todos",
         tipoTrabalho: "todos",
-        notaMin: 10,
+        notaMin: 0,
         notaMax: 20
     });
 
@@ -53,6 +54,7 @@ function SearchPage() {
     // 3. Lógica Unificada de Busca e Paginação (AGORA COM OS FILTROS LIGADOS)
     useEffect(() => {
         const carregarDados = async () => {
+            setHasSearched(true);
             setLoading(true);
             try {
                 const resposta = await axios.get("http://127.0.0.1:8000/api/tccs", {
@@ -218,13 +220,13 @@ function SearchPage() {
                         <div className="range-valores-flutuantes">
                             <span
                                 className="valor-balao"
-                                style={{ left: `${((filtros.notaMin - 10) / 10) * 100}%` }}
+                                style={{ left: `${(filtros.notaMin / 20) * 100}%` }}
                             >
                                 {filtros.notaMin}v
                             </span>
                             <span
                                 className="valor-balao"
-                                style={{ left: `${((filtros.notaMax - 10) / 10) * 100}%` }}
+                                style={{ left: `${(filtros.notaMax / 20) * 100}%` }}
                             >
                                 {filtros.notaMax}v
                             </span>
@@ -234,15 +236,15 @@ function SearchPage() {
                             className="range-pista-background"
                             style={{
                                 background: `linear-gradient(to right, 
-                        var(--fundo-claro) ${((filtros.notaMin - 10) / 10) * 100}%, 
-                        var(--cor-primaria) ${((filtros.notaMin - 10) / 10) * 100}%, 
-                        var(--cor-primaria) ${((filtros.notaMax - 10) / 10) * 100}%, 
-                        var(--fundo-claro) ${((filtros.notaMax - 10) / 10) * 100}%)`
+                        var(--fundo-claro) ${(filtros.notaMin / 20) * 100}%, 
+                        var(--cor-primaria) ${(filtros.notaMin / 20) * 100}%, 
+                        var(--cor-primaria) ${(filtros.notaMax / 20) * 100}%, 
+                        var(--fundo-claro) ${(filtros.notaMax / 20) * 100}%)`
                             }}
                         >
                             <input
                                 type="range"
-                                min="10"
+                                min="0"
                                 max="20"
                                 value={filtros.notaMin}
                                 onChange={handleNotaMin}
@@ -250,7 +252,7 @@ function SearchPage() {
                             />
                             <input
                                 type="range"
-                                min="10"
+                                min="0"
                                 max="20"
                                 value={filtros.notaMax}
                                 onChange={handleNotaMax}
@@ -260,7 +262,7 @@ function SearchPage() {
 
                         {/* Limites estáticos nas pontas (0 e 20) */}
                         <div className="range-limites-as-pontas">
-                            <span>10</span>
+                            <span>0</span>
                             <span>20</span>
                         </div>
                     </div>
@@ -276,6 +278,7 @@ function SearchPage() {
                 onDetailsClick={visualizarDetalhes}
                 loading={loading}
                 query={termoBusca}
+                hasSearched={hasSearched}
             />
 
             {/* Paginação Estilo Catálogo */}

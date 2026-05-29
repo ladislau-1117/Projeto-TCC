@@ -6,7 +6,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TccController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AnaliseAcademicaController;
-
+use App\Http\Controllers\CursoController;
+use App\Http\Controllers\API\PerfilController;
 
 
 
@@ -55,4 +56,11 @@ Route::get('/analise-academica/estatisticas-tipo', [AnaliseAcademicaController::
 //Log de Acesso
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/logs', [AuthController::class, 'obterLogs']);
+
+
+//Ver e editar perfil
+Route::get('/perfil', [PerfilController::class, 'show']);
+Route::put('/perfil/atualizar', [PerfilController::class, 'update']);
+
+
 

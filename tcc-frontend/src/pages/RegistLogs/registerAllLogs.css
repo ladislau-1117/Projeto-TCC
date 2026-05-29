@@ -55,8 +55,15 @@
     color: #27ae60;
 }
 
-.statusBadge.loginFalha {
+..statusBadge.loginFalha {
     color: #db6c5f;
     border-left: 3px solid #e74c3c;
     background: #fdedec;
+}
+
+.logsLoadingWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 70vh;
 }

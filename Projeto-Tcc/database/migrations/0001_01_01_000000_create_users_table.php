@@ -19,6 +19,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->integer('tentativasFalhas')->default(0); 
+            $table->string('tipo_utilizador', 20)->default('normal');
             $table->rememberToken();
             $table->timestamps();
         });

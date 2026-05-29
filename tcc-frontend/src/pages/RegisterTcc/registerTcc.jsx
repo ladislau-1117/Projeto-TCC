@@ -178,8 +178,8 @@ function RegisterTcc() {
                             {/* SEÇÃO DINÂMICA DE AUTORES */}
                             <div className="autores-section">
                                 {autores.map((nome, index) => (
-                                    <div key={index} className="inputContainer autor-item" style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '15px' }}>
-                                        <div className="inputContainer" >
+                                    <div key={index} className="inputContainer autor-item" style={{ display: 'flex', alignItems: 'flex-end', gap: '10px', marginBottom: '15px', width: '100%' }}>
+                                        <div className="inputContainer" style={{ flex: 1 }}>
                                             <input
                                                 type="text"
                                                 placeholder=" "
@@ -190,7 +190,7 @@ function RegisterTcc() {
                                             <label>Autor {index + 1}</label>
                                         </div>
                                         {autores.length > 1 && (
-                                            <button type="button" onClick={() => removerAutor(index)} className="btn-remove-autor">
+                                            <button type="button" onClick={() => removerAutor(index)} className="btn-remove-autor" style={{ marginBottom: '7px' }}>
                                                 <CancelAuthor />
                                             </button>
                                         )}

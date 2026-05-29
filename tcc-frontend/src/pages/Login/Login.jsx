@@ -74,6 +74,7 @@ function Login() {
           toast.success("Bem-vindo!");
 
           sessionStorage.setItem('user', JSON.stringify(response.data.user));
+          sessionStorage.setItem('homeInitialLoadShown', 'false');
           
           // Se estás a usar Sanctum/Tokens, podes guardar o token aqui também se precisares:
           // sessionStorage.setItem('token', response.data.token);
