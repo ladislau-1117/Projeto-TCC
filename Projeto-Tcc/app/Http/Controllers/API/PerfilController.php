@@ -29,16 +29,16 @@ class PerfilController extends Controller
         // CORREÇÃO: Apontar a regra unique para a tabela 'users' e a PK correta
         $request->validate([
             'nome' => 'required|string|max:100',
-            'email' => 'required|email|max:35|unique:users,email,' . $user->idUtilizador . ',idUtilizador',
+            'email' => 'required|email|max:35|unique:users,email,' . $user->id . ',id',
             'senha' => 'nullable|string|min:8',
         ]);
 
-        // Gravação nas colunas do teu banco
-        $user->nome = $request->nome;
+        // Gravação nas colunas do teu banco (usando os nomes corretos)
+        $user->name = $request->nome;
         $user->email = $request->email;
 
         if ($request->filled('senha')) {
-            $user->senha = Hash::make($request->senha);
+            $user->password = Hash::make($request->senha);
         }
 
         $user->save();
@@ -47,8 +47,8 @@ class PerfilController extends Controller
             'sucesso' => true,
             'mensagem' => 'Dados atualizados com sucesso!',
             'dados' => [
-                'idUtilizador' => $user->idUtilizador,
-                'name'         => $user->nome, // Retorna mapeado para 'name' para sincronizar com o React
+                'idUtilizador' => $user->id,
+                'name'         => $user->name,
                 'email'        => $user->email,
                 'numProcesso'  => $user->numProcesso
             ]

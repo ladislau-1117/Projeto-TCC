@@ -3,7 +3,7 @@ import axios from "axios";
 import "./PerfilModal.css";
 
 const ProfileModal = ({ mode, setMode, currentUser, refreshUser }) => {
-    // Estado do formulário focado apenas nos 3 campos editáveis
+
     const [formData, setFormData] = useState({
         nome: currentUser?.name || "",
         email: currentUser?.email || "",
@@ -12,8 +12,13 @@ const ProfileModal = ({ mode, setMode, currentUser, refreshUser }) => {
     const [loading, setLoading] = useState(false);
     const [erro, setErro] = useState("");
 
-    // Sincroniza o estado caso o currentUser mude externamente
     useEffect(() => {
+        console.log("PerfilModal: mode mudou para:", mode);
+    }, [mode]);
+
+    
+    useEffect(() => {
+        
         if (currentUser) {
             setFormData(prev => ({
                 ...prev,
@@ -29,17 +34,23 @@ const ProfileModal = ({ mode, setMode, currentUser, refreshUser }) => {
     };
 
     const handleSalvar = async (e) => {
-        e.preventDefault();
+        if (mode !== 'edit') {
+            
+            e.preventDefault?.();
+            return;
+        }
+
+        e.preventDefault?.();
+
         setLoading(true);
         setErro("");
 
         try {
-            // Recupera o token que o AuthController gerou e guardou no sessionStorage
+           
             const token = sessionStorage.getItem("token");
 
-            // Rota PUT conectada ao Laravel passando o Bearer Token no cabeçalho
             const response = await axios.put(
-                "/api/perfil/atualizar",
+                "http://127.0.0.1:8000/api/perfil",
                 {
                     nome: formData.nome,
                     email: formData.email,
@@ -47,27 +58,29 @@ const ProfileModal = ({ mode, setMode, currentUser, refreshUser }) => {
                 },
                 {
                     headers: {
-                        Authorization: `Bearer ${token}` // Informa ao Sanctum quem está a fazer a alteração
+                        Authorization: `Bearer ${token}` 
                     }
                 }
             );
 
-            
+        
+
             if (response.data.sucesso) {
-                // Atualiza o SessionStorage e o estado do Header com o padrão 'name'
+                
                 refreshUser({
                     idUtilizador: response.data.dados.idUtilizador,
                     name: response.data.dados.name,
                     email: response.data.dados.email,
                     numProcesso: response.data.dados.numProcesso
                 });
-                setMode("closed"); // Fecha o modal com sucesso
+                setMode("view"); 
             }
         } catch (err) {
-            // Captura o erro real vindo do Laravel
+            
+            
             setErro(err.response?.data?.error || err.response?.data?.mensagem || "Erro ao atualizar os dados.");
         } finally {
-            // Força a limpeza do campo de senha por segurança
+            
             setFormData(prev => ({ ...prev, senha: "" }));
             setLoading(false);
         }
@@ -86,9 +99,9 @@ const ProfileModal = ({ mode, setMode, currentUser, refreshUser }) => {
                 {erro && <div className="errorAlert">{erro}</div>}
 
                 {/* CONTEÚDO DO PERFIL */}
-                <form onSubmit={handleSalvar} className="modalForm">
+                <form className="modalForm" noValidate>
 
-                    {/* Campo Fixo: Número de Processo corrigido com base na migration */}
+                    {/*Número de Processo "Fixo"*/}
                     <div className="inputGroup">
                         <label>Nº de Processo (IPIL):</label>
                         <p className="staticField">{currentUser?.numProcesso || "Não definido"}</p>
@@ -126,7 +139,7 @@ const ProfileModal = ({ mode, setMode, currentUser, refreshUser }) => {
                         )}
                     </div>
 
-                    {/* Senha: Só renderiza se estiver explicitamente no modo de edição */}
+                    {/* Senha*/}
                     {mode === "edit" && (
                         <div className="inputGroup">
                             <label>Nova Senha (deixe em branco para manter a atual):</label>
@@ -140,7 +153,7 @@ const ProfileModal = ({ mode, setMode, currentUser, refreshUser }) => {
                         </div>
                     )}
 
-                    {/* RODAPÉ E BOTÕES ALTERNÁVEIS DE FLUXO */}
+                    {/* RODAPÉ E BOTÕES  */}
                     <div className="modalFooter">
                         {mode === "view" ? (
                             <>
@@ -153,11 +166,19 @@ const ProfileModal = ({ mode, setMode, currentUser, refreshUser }) => {
                             </>
                         ) : (
                             <>
-                                {/* Corrigido: Ao cancelar a edição, volta a exibir o perfil em modo leitura */}
+                                
                                 <button type="button" className="btnCancelar" onClick={() => setMode("view")}>
                                     Cancelar
                                 </button>
-                                <button type="submit" className="btnAcaoPrincipal" disabled={loading}>
+                                <button
+                                    type="button"
+                                    className="btnAcaoPrincipal"
+                                    disabled={loading}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        handleSalvar(e);
+                                    }}
+                                >
                                     {loading ? "A guardar..." : "Salvar Alterações"}
                                 </button>
                             </>

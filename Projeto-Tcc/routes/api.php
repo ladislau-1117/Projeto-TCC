@@ -61,7 +61,7 @@ Route::get('/logs', [AuthController::class, 'obterLogs']);
 //Ver e editar perfil
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/perfil', [PerfilController::class, 'show']);
-    Route::put('/perfil/atualizar', [PerfilController::class, 'update']);
+    Route::put('/perfil', [PerfilController::class, 'update']);
 });
 
 
