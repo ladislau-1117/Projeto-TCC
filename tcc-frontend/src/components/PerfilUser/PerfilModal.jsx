@@ -52,6 +52,7 @@ const ProfileModal = ({ mode, setMode, currentUser, refreshUser }) => {
                 }
             );
 
+            
             if (response.data.sucesso) {
                 // Atualiza o SessionStorage e o estado do Header com o padrão 'name'
                 refreshUser({
