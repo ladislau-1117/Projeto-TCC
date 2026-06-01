@@ -68,7 +68,7 @@ class AuthController extends Controller
             $seconds = RateLimiter::availableIn($throttleKey);
 
             return response()->json([
-                'error' => "Muitas tentativas falhadas. Acesso bloqueado por segurança. Tente novamente em {$seconds} segundos."
+                'error' => "Acesso bloqueado. Tente novamente em {$seconds} segundos."
             ], 429);
         }
 
@@ -93,7 +93,7 @@ class AuthController extends Controller
             }
 
             return response()->json([
-                'error' => 'Nº de Processo ou Senha incorretos. Verifique os dados.'
+                'error' => 'Nº de Processo ou Senha incorretos.'
             ], 401);
         }
 
@@ -108,8 +108,21 @@ class AuthController extends Controller
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
-        return response()->json(['token' => $token, 'user' => $user], 200);
-    }
+        // CRIAMOS AQUI O OBJETO COM A NOVA COLUNA TIPO_UTILIZADOR
+            $userResponse = [
+                'id'              => $user->id,
+                'name'            => $user->name,
+                'email'           => $user->email,
+                'numProcesso'     => $user->numProcesso,
+                'tipo_utilizador' => $user->tipo_utilizador // Captura o 'admin' ou 'normal' do banco
+            ];
+
+            // RETORNAMOS O TOKEN E O USER RESPONSE PARA O REACT
+            return response()->json([
+                'token' => $token, 
+                'user'  => $userResponse
+            ], 200);
+        }
 
     public function obterLogs(Request $request)
     {

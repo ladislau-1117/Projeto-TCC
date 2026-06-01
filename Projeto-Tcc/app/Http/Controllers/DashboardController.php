@@ -14,19 +14,20 @@ class DashboardController extends Controller
         $anoAtual = date('Y');
         $totalAno = DB::table('tccs')->where('anoDefesa', $anoAtual)->count();
 
-        // 3. Ocupação (Lógica de 50 por local)
-        $totalLocais = DB::table('locaisArmazenamento')->count();
-        $capacidadeTotal = $totalLocais * 50;
-        
-        $ocupacao = 0;
-        if ($capacidadeTotal > 0) {
-            $ocupacao = round(($totalRelatorios / $capacidadeTotal) * 100, 1);
-        }
+        // 3. Curso Líder (maior volume de relatórios por curso)
+        $cursoLiderReg = DB::table('tccs')
+            ->join('cursos', 'tccs.idCurso', '=', 'cursos.idCurso')
+            ->select('cursos.nome', DB::raw('count(*) as total'))
+            ->groupBy('cursos.idCurso', 'cursos.nome')
+            ->orderBy('total', 'desc')
+            ->first();
+
+        $cursoLider = $cursoLiderReg ? $cursoLiderReg->nome : 'Nenhum';
 
         return response()->json([
             'totalRelatorios' => $totalRelatorios,
             'totalAno' => $totalAno,
-            'ocupacao' => $ocupacao
+            'cursoLider' => $cursoLider
         ]);
     }
 

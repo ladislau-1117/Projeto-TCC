@@ -23,7 +23,7 @@ function BarGrafic({ data, title }) {
 function CircleGrafic({ data, title }) {
     if (!data || data.length === 0) return <p>Sem dados</p>;
 
-    const COLORS = ["#34495e", "#e67e22"];
+    const COLORS = ["var(--fundo-escuro)", "var(--cor-primaria)"]; 
 
     return (
         <div className="ContainerGraph">

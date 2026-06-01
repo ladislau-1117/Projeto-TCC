@@ -29,9 +29,8 @@ function DashInfo({ dados, graphData }) {
           icon={<InsertIcon />} 
         />
         <InfoCard 
-          title="Ocupação por Estante" 
-          value={dados.ocupacao} 
-          unit="%" 
+          title="Curso Líder" 
+          value={dados.cursoLider} 
           icon={<GraficIcon />} 
         />
       </div>

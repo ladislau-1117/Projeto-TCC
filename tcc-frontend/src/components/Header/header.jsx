@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { UserIcon } from "../../assets/icons";
 import ProfileModal from "../PerfilUser/PerfilModal"; // Puxa o componente isolado da pasta dele
 import './header.css';
 
 const Header = ({ isOpen }) => {
+    const dropdownRef = useRef(null);
     const [user, setUser] = useState(null);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [modalMode, setModalMode] = useState('closed'); // Controla o estado: closed, view, edit
@@ -19,12 +20,28 @@ const Header = ({ isOpen }) => {
         sessionStorage.clear();
         window.location.href = '/login';
     };
+
+    useEffect(() => {
+        const fecharDropdownFora = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setIsDropdownOpen(false);
+            }
+        };
+
+        if (isDropdownOpen) {
+            document.addEventListener('mousedown', fecharDropdownFora);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', fecharDropdownFora);
+        };
+    }, [isDropdownOpen]);
     
     return (
         <header className={`header ${isOpen ? "expanded" : "compact"}`}>
             <h2>Acervo Digital</h2>
             {user && (
-                <div className="userInfoWrapper">
+                <div className="userInfoWrapper" ref={dropdownRef}>
                     <div className="userInfo" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
                         <span>
                             Olá <strong>{user.name.split(' ')[0]}</strong> <UserIcon />

@@ -8,7 +8,7 @@ import "./home.css";
 
 function Home() {
   const navigate = useNavigate();
-  const [dados, setDados] = useState({ totalRelatorios: 0, totalAno: 0, ocupacao: 0 });
+  const [dados, setDados] = useState({ totalRelatorios: 0, totalAno: 0, cursoLider: 'Nenhum' });
   const [graphData, setGraphData] = useState({ barData: [], circleData: [] });
   const [initialLoading, setInitialLoading] = useState(() => sessionStorage.getItem('homeInitialLoadShown') !== 'true');
   const [loading, setLoading] = useState(true);
