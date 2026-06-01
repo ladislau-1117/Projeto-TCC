@@ -9,6 +9,58 @@
   padding-left: 1rem;
 }
 
+/* Paginação - estilos do catálogo */
+.pagination-wrapper{
+  display:flex;
+  gap:12px;
+  align-items:center;
+  justify-content:center;
+  margin:24px 0;
+}
+
+.pag-btn{
+  background: #fff;
+  border: 2px solid var(--cor-primaria, #D35400);
+  color: var(--cor-primaria, #D35400);
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all .12s ease;
+}
+
+.pag-btn:hover:not(:disabled){
+  background: var(--cor-primaria, #D35400);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.pag-btn:disabled{
+  opacity: 0.5;
+  border-color: #dcdcdc;
+  color: #888;
+  background: #fafafa;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.pag-btn:focus{
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(211,84,0,0.12);
+}
+
+.page-indicator{
+  font-size: 14px;
+  color: #444;
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+
+.page-indicator strong{
+  color: var(--cor-primaria, #D35400);
+}
+
 
 
 
