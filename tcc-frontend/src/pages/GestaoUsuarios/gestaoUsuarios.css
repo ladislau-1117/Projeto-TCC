@@ -1,0 +1,87 @@
+.GestaoContainer {
+    padding: 30px;
+    background-color: #f4f7f6;
+    min-height: 100vh;
+}
+
+.GestaoHeader {
+    margin-bottom: 25px;
+}
+
+.GestaoHeader h2 {
+    color: var(--cor-primaria);
+    margin: 0;
+}
+
+.GestaoHeader p {
+    color: var(--fundo-escuro);
+    font-size: 14px;
+}
+
+.tabelaCard {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    overflow: hidden;
+}
+
+.usuariosTable {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.usuariosTable th {
+    background-color: var(--fundo-escuro);
+    padding: 15px 20px;
+    color: var(--texto-claro);
+    font-weight: bold;
+    font-size: 13px;
+    border-bottom: 2px solid #edf2f7;
+}
+
+.usuariosTable td {
+    padding: 15px 20px;
+    border-bottom: 1px solid #edf2f7;
+    color: var(--fundo-escuro);
+    font-size: 14px;
+}
+
+.nomeCell {
+    font-weight: 600;
+    color: var(--texto-escuro) !important;
+}
+
+/* Badges de Tipo */
+.badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.badge.admin {
+    background-color: var(--texto-claro);
+    color: #e53e3e;
+    border: 1px solid #feb2b2;
+}
+
+.badge.user {
+    background-color: #ebf8ff;
+    color: #3182ce;
+    border: 1px solid #bee3f8;
+}
+
+/* Indicador Online */
+.statusOnline {
+    width: 8px;
+    height: 8px;
+    background-color: #48bb78;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.usuariosTable tr:hover {
+    background-color: #fcfcfc;
+}

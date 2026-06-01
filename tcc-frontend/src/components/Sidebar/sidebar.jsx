@@ -58,6 +58,10 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                     <LogRegistIcon />
                     {isOpen && <span>Registro de Login</span>}
                 </NavLink>
+                <NavLink to="/pages/gestaoUsuarios" className={({ isActive }) => isActive ? "navItem active" : "navItem"}>
+                    <LogRegistIcon />
+                    {isOpen && <span>Gestão de Usuário</span>}
+                </NavLink>
 
             </nav>
             

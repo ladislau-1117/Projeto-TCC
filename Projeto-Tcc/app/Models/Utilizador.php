@@ -22,5 +22,20 @@ class Utilizador extends Authenticatable
         'senha',
     ];
 
-    public $timestamps = false; // Como usa 'dataCriacao' em vez de created_at/updated_at
+    public $timestamps = false;
+    
+    // buscar os logs do utilizador
+    public function logs()
+    {
+        return $this->hasMany(LogAcesso::class, 'idUtilizador', 'idUtilizador');
+    }
+
+    // último login de sucesso
+    public function ultimoLogin()
+    {
+        return $this->hasOne(LogAcesso::class, 'idUtilizador', 'idUtilizador')
+                    ->where('tipoEvento', 'loginSucesso')
+                    ->latest('dataEvento');
+    }
 }
+

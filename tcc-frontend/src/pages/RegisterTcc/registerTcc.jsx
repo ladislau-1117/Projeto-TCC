@@ -156,7 +156,7 @@ function RegisterTcc() {
     };
 
     return (
-        <div>
+        <div className="main">
             <div className="headerRegist">
                 <h1>Registar Relatório</h1>
                 <p><strong>Adicionar novos relatórios ao sistema</strong></p>

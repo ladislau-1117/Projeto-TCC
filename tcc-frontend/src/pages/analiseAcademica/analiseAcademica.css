@@ -1,7 +1,8 @@
 .dashboardContainer {
-    padding: 0px;
+    padding: 20px;
     background-color: #f8f9fa;
     min-height: auto;
+
 }
 
 .dashboardHeader h1 {

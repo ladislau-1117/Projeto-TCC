@@ -144,6 +144,38 @@ class AuthController extends Controller
             ], 500);
         }
     }
+
+
+    public function listarTodos()
+{
+    // todos os utilizadores com último login de sucesso
+    $utilizadores = User::all();
+
+    $dados = $utilizadores->map(function($u) {
+        $tipoExibicao = 'normal';
+        if ($u->tipo_utilizador === 'admin' || $u->numProcesso === 'ADMIN') {
+            $tipoExibicao = 'Administrador';
+        }
+
+        // Buscar último login de sucesso do utilizador
+        $ultimoLogin = LogAcesso::where('idUtilizador', $u->id)
+                                 ->where('tipoEvento', 'loginSucesso')
+                                 ->latest('dataEvento')
+                                 ->first();
+
+        return [
+            'id'            => $u->id, 
+            'nome'          => $u->name,        
+            'email'         => $u->email,
+            'numProcesso'   => $u->numProcesso,
+            'tipo'          => $tipoExibicao,
+            'data_registro' => $u->created_at ? date('d/m/Y', strtotime($u->created_at)) : 'Sem data', 
+            'ultimo_login'  => $ultimoLogin ? date('d/m/Y H:i', strtotime($ultimoLogin->dataEvento)) : 'Nunca acedeu'
+        ];
+    });
+
+    return response()->json($dados);
+}
 }
 
 

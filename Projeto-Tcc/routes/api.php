@@ -65,3 +65,7 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 
+//Gestão de usuários
+Route::get('/utilizadores/todos', [AuthController::class, 'listarTodos']);
+
+
